@@ -1,0 +1,168 @@
+/* ═══════════════════════════════════════════════
+   RĀGA & COSMIC RHYTHM — ANIMATIONS
+═══════════════════════════════════════════════ */
+
+/* ── Section Fade In ── */
+.content-section.sec-active {
+  animation: sectionReveal 0.5s ease forwards;
+}
+@keyframes sectionReveal {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Rāga Cards stagger ── */
+.raga-card {
+  animation: cardReveal 0.4s ease backwards;
+}
+.raga-card:nth-child(1)  { animation-delay: 0.05s; }
+.raga-card:nth-child(2)  { animation-delay: 0.10s; }
+.raga-card:nth-child(3)  { animation-delay: 0.15s; }
+.raga-card:nth-child(4)  { animation-delay: 0.20s; }
+.raga-card:nth-child(5)  { animation-delay: 0.25s; }
+.raga-card:nth-child(6)  { animation-delay: 0.30s; }
+.raga-card:nth-child(7)  { animation-delay: 0.35s; }
+.raga-card:nth-child(8)  { animation-delay: 0.40s; }
+.raga-card:nth-child(9)  { animation-delay: 0.45s; }
+.raga-card:nth-child(10) { animation-delay: 0.50s; }
+.raga-card:nth-child(11) { animation-delay: 0.55s; }
+.raga-card:nth-child(12) { animation-delay: 0.60s; }
+
+@keyframes cardReveal {
+  from { opacity: 0; transform: scale(0.96) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ── Dash cards slide in ── */
+.dash-card {
+  animation: slideUp 0.5s ease backwards;
+}
+.dash-card:nth-child(1) { animation-delay: 0.1s; }
+.dash-card:nth-child(2) { animation-delay: 0.2s; }
+.dash-card:nth-child(3) { animation-delay: 0.3s; }
+.dash-card:nth-child(4) { animation-delay: 0.4s; }
+.dash-card:nth-child(5) { animation-delay: 0.5s; }
+.dash-card:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header glow pulse ── */
+.logo-symbol {
+  animation: logoPulse 4s ease-in-out infinite;
+}
+@keyframes logoPulse {
+  0%, 100% { text-shadow: 0 0 20px rgba(232,169,74,0.5); }
+  50%       { text-shadow: 0 0 40px rgba(232,169,74,0.9), 0 0 80px rgba(224,92,26,0.3); }
+}
+
+/* ── Rāga name highlight on hero ── */
+.raga-name-large {
+  animation: nameShimmer 3s ease-in-out infinite;
+}
+@keyframes nameShimmer {
+  0%, 100% { color: var(--gold-light); }
+  50%       { color: #fff8e7; text-shadow: 0 0 20px rgba(232,169,74,0.4); }
+}
+
+/* ── Waveform bar dance ── */
+.wave-bar {
+  animation: waveDance var(--dur, 0.8s) ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes waveDance {
+  from { transform: scaleY(0.2); }
+  to   { transform: scaleY(1); }
+}
+
+/* ── Sun/moon orb float ── */
+#sun-moon-orb {
+  animation: orbFloat 8s ease-in-out infinite;
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-10px) scale(1.05); }
+}
+
+/* ── Nav hover underline ── */
+#main-nav ul li a::after {
+  content: '';
+  display: block;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+#main-nav ul li a:hover::after,
+#main-nav ul li a.nav-active::after {
+  transform: scaleX(1);
+}
+
+/* ── Timeline dots pulse ── */
+.timeline-entry::before {
+  animation: dotPulse 3s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 0.3s);
+}
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(232,169,74,0.4); }
+  50%       { box-shadow: 0 0 20px rgba(232,169,74,0.8); }
+}
+
+/* ── Research badge glow ── */
+.research-badge {
+  animation: badgeFade 4s ease-in-out infinite;
+}
+@keyframes badgeFade {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.7; }
+}
+
+/* ── Community post slide in ── */
+.community-post {
+  animation: postSlide 0.4s ease backwards;
+}
+.community-post:nth-child(1) { animation-delay: 0.1s; }
+.community-post:nth-child(2) { animation-delay: 0.2s; }
+.community-post:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes postSlide {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Rāga card shimmer border on hover ── */
+.raga-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r);
+  background: linear-gradient(135deg, rgba(232,169,74,0) 0%, rgba(232,169,74,0.05) 50%, rgba(232,169,74,0) 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.raga-card:hover::after { opacity: 1; }
+
+/* ── Mandala spin ── */
+#mandala-canvas {
+  animation: mandalaSpin 60s linear infinite;
+}
+@keyframes mandalaSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Scroll indicator for raga band ── */
+#raga-band::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  background: linear-gradient(90deg, transparent, var(--bg-deep));
+  pointer-events: none;
+}
