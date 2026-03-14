@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#0f0f13" />
+  <title>Sudoku Multiplayer</title>
+  <link rel="stylesheet" href="src/css/main.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ── HOME ── -->
+  <div id="screen-home" class="screen active">
+    <div class="home-header">
+      <div class="logo-box">S</div>
+      <h1 class="logo-title">Sudoku</h1>
+      <p class="logo-sub">Multiplayer</p>
+    </div>
+    <div class="mode-list">
+      <button class="mode-btn" onclick="UI.goSetup('solo')">
+        <span class="mode-icon">👤</span>
+        <span class="mode-text"><strong>Solo</strong><small>Practice at your pace</small></span>
+        <span class="chevron">›</span>
+      </button>
+      <button class="mode-btn featured" onclick="UI.goSetup('versus')">
+        <span class="live-pill">LIVE</span>
+        <span class="mode-icon">⚔️</span>
+        <span class="mode-text"><strong>1v1 Live</strong><small>Race on same puzzle, real-time sync</small></span>
+        <span class="chevron">›</span>
+      </button>
+      <button class="mode-btn" onclick="UI.goSetup('coop')">
+        <span class="mode-icon">🤝</span>
+        <span class="mode-text"><strong>Co-op</strong><small>Solve together</small></span>
+        <span class="chevron">›</span>
+      </button>
+    </div>
+    <div class="stat-strip">
+      <div class="stat-item"><span id="hs-played">0</span><label>played</label></div>
+      <div class="stat-div"></div>
+      <div class="stat-item"><span id="hs-won">0</span><label>won</label></div>
+      <div class="stat-div"></div>
+      <div class="stat-item"><span id="hs-best">--</span><label>best time</label></div>
+    </div>
+  </div>
+
+  <!-- ── SETUP ── -->
+  <div id="screen-setup" class="screen">
+    <button class="back-btn" onclick="UI.goHome()">← Back</button>
+    <h2 id="setup-title" class="screen-title">Setup</h2>
+
+    <div class="form-block">
+      <label class="form-label">Difficulty</label>
+      <div class="seg-control" id="diff-seg">
+        <button class="seg-btn active" data-d="easy"   onclick="UI.setDiff(this)">Easy</button>
+        <button class="seg-btn"        data-d="medium" onclick="UI.setDiff(this)">Medium</button>
+        <button class="seg-btn"        data-d="hard"   onclick="UI.setDiff(this)">Hard</button>
+        <button class="seg-btn"        data-d="expert" onclick="UI.setDiff(this)">Expert</button>
+      </div>
+    </div>
+
+    <div class="form-block" id="name-block">
+      <!-- injected per mode -->
+    </div>
+
+    <!-- MULTIPLAYER ROOM BLOCK -->
+    <div id="room-block" class="form-block" style="display:none">
+      <label class="form-label">Room</label>
+
+      <div class="room-card" id="host-panel">
+        <p class="room-card-label">HOST — share this code</p>
+        <div class="room-code-big" id="room-code-display">- - - -</div>
+        <div class="room-status-row">
+          <span class="sync-dot" id="setup-dot"></span>
+          <span id="setup-status-text">Generating room…</span>
+        </div>
+      </div>
+
+      <div class="or-divider"><span>or</span></div>
+
+      <div class="join-row">
+        <input id="join-input" class="join-input" maxlength="4"
+               placeholder="Enter code to join"
+               oninput="this.value=this.value.toUpperCase()"
+               onkeydown="if(event.key==='Enter')UI.joinRoom()" />
+        <button class="join-btn" onclick="UI.joinRoom()">Join</button>
+      </div>
+    </div>
+
+    <button class="primary-btn" id="start-btn" onclick="UI.startGame()" disabled>
+      Start Game
+    </button>
+  </div>
+
+  <!-- ── GAME ── -->
+  <div id="screen-game" class="screen">
+    <div class="game-bar">
+      <button class="icon-btn quit-btn" onclick="UI.confirmQuit()">✕</button>
+      <div class="timer-box" id="timer-box">0:00</div>
+      <div class="topbar-right">
+        <span class="diff-chip" id="diff-chip">Easy</span>
+        <span class="mode-chip" id="mode-chip">Solo</span>
+      </div>
+    </div>
+
+    <div id="scorebar"></div>
+
+    <div class="board-wrap">
+      <div class="board" id="board"></div>
+    </div>
+
+    <div class="numpad" id="numpad"></div>
+
+    <div class="action-strip">
+      <button class="act-btn" onclick="UI.doErase()">⌫ Erase</button>
+      <button class="act-btn" onclick="UI.doHint()">💡 Hint <span id="hint-left" class="chip">3</span></button>
+      <button class="act-btn" id="notes-btn" onclick="UI.toggleNotes()">✏️ Notes</button>
+      <button class="act-btn" onclick="UI.doCheck()">✓ Check</button>
+    </div>
+
+    <div class="conn-bar" id="conn-bar">
+      <span class="sync-dot" id="game-dot"></span>
+      <span id="game-conn-label">Offline</span>
+      <span id="game-conn-detail" class="conn-detail"></span>
+    </div>
+  </div>
+
+  <!-- ── RESULT ── -->
+  <div id="screen-result" class="screen">
+    <div class="result-inner">
+      <div class="result-trophy" id="result-trophy">🏆</div>
+      <h2 id="result-title">Puzzle Complete!</h2>
+      <p id="result-sub" class="result-sub"></p>
+      <div id="result-cards" class="result-cards"></div>
+      <button class="primary-btn" onclick="UI.playAgain()">Play Again</button>
+      <button class="ghost-btn"   onclick="UI.goHome()">Home</button>
+    </div>
+  </div>
+
+</div>
+<script src="src/js/puzzles.js"></script>
+<script src="src/js/generator.js"></script>
+<script src="src/js/realtime.js"></script>
+<script src="src/js/game.js"></script>
+<script src="src/js/ui.js"></script>
+</body>
+</html>
