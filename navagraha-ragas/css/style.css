@@ -6,24 +6,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Noto+Sans:wght@300;400;500&display=swap');
 
 :root {
-  --bg-deep:     #050812;
-  --bg-void:     #080e1a;
-  --bg-panel:    #0c1424;
-  --bg-card:     #0f1930;
-  --border:      rgba(255, 200, 80, 0.12);
-  --border-glow: rgba(255, 200, 80, 0.35);
-  --gold:        #F5C842;
-  --gold-dim:    #C8A030;
-  --gold-light:  #FFE490;
-  --text:        #E8DCC8;
-  --text-dim:    #8A7A60;
-  --text-faint:  #3A3020;
-  --accent:      #FF8C00;
-  --sidebar-w:   380px;
-  --nav-h:       64px;
-  --font-display: 'Cinzel', serif;
-  --font-body:    'Crimson Text', serif;
-  --font-ui:      'Noto Sans', sans-serif;
+  --bg-deep:      #020408;
+  --bg-void:      #050a14;
+  --bg-panel:     #0a1628;
+  --bg-card:      #10223d;
+  --border:       rgba(0, 210, 255, 0.1);
+  --border-glow:  rgba(255, 170, 0, 0.4);
+  --gold:         #FFD700; /* True Sun Gold */
+  --gold-dim:     #B8860B;
+  --gold-light:   #FFF4CC;
+  --text:         #F0F5FF; /* Crisp Star White */
+  --text-dim:     #708090;
+  --text-faint:   #1A2A3A;
+  --accent:       #00D2FF; /* Cyan flare for contrast */
+  --font-display: 'Spectral', serif;
+  --font-body:    'Inter', sans-serif;
 }
 
 /* ── Reset ── */
