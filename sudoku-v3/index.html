@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="theme-color" content="#0c0c12"/>
+  <title>Sudoku Multiplayer</title>
+  <link rel="stylesheet" href="src/css/main.css"/>
+</head>
+<body>
+<div id="app">
+
+<!-- ── HOME ── -->
+<div id="screen-home" class="screen active">
+  <div class="home-header">
+    <div class="logo-box">S</div>
+    <h1 class="logo-title">Sudoku</h1>
+    <p class="logo-sub">Fellowship Edition</p>
+  </div>
+  <div class="home-modes">
+    <button class="mode-btn" onclick="UI.goSetup('solo')">
+      <span class="mode-icon">🧙</span>
+      <span class="mode-text"><strong>Solo Quest</strong><small>Practice at your own pace</small></span>
+      <span class="chevron">›</span>
+    </button>
+    <button class="mode-btn featured" onclick="UI.goSetup('versus')">
+      <span class="live-pill">LIVE</span>
+      <span class="mode-icon">⚔️</span>
+      <span class="mode-text"><strong>Versus — 2 or 4 Players</strong><small>Race to finish, real-time sync across devices</small></span>
+      <span class="chevron">›</span>
+    </button>
+    <button class="mode-btn" onclick="UI.goSetup('teams')">
+      <span class="live-pill" style="background:#a78bfa">LIVE</span>
+      <span class="mode-icon">🛡️</span>
+      <span class="mode-text"><strong>Team Battle — 2 vs 2</strong><small>Two teams of two, combined scores</small></span>
+      <span class="chevron">›</span>
+    </button>
+    <button class="mode-btn" onclick="UI.goSetup('coop')">
+      <span class="mode-icon">🤝</span>
+      <span class="mode-text"><strong>Co-op</strong><small>Solve together as a fellowship</small></span>
+      <span class="chevron">›</span>
+    </button>
+  </div>
+  <div class="stat-strip">
+    <div class="stat-item"><span id="hs-played">0</span><label>played</label></div>
+    <div class="stat-div"></div>
+    <div class="stat-item"><span id="hs-won">0</span><label>won</label></div>
+    <div class="stat-div"></div>
+    <div class="stat-item"><span id="hs-best">--</span><label>best time</label></div>
+  </div>
+</div>
+
+<!-- ── SETUP ── -->
+<div id="screen-setup" class="screen">
+  <button class="back-btn" onclick="UI.goHome()">← Back</button>
+  <h2 id="setup-title" class="screen-title">Setup</h2>
+
+  <div class="form-block">
+    <label class="form-label">Difficulty</label>
+    <div class="seg-control">
+      <button class="seg-btn active" data-d="easy"   onclick="UI.setDiff(this)">Easy</button>
+      <button class="seg-btn"        data-d="medium" onclick="UI.setDiff(this)">Medium</button>
+      <button class="seg-btn"        data-d="hard"   onclick="UI.setDiff(this)">Hard</button>
+      <button class="seg-btn"        data-d="expert" onclick="UI.setDiff(this)">Expert</button>
+    </div>
+  </div>
+
+  <div class="form-block" id="players-block"><!-- injected --></div>
+
+  <div id="room-block" class="form-block" style="display:none">
+    <label class="form-label">Room</label>
+    <div class="room-card">
+      <div class="room-card-lbl">Host — share this code</div>
+      <div class="room-code-big" id="room-code-disp">- - - -</div>
+      <div class="room-status-row">
+        <span class="sync-dot" id="setup-dot"></span>
+        <span id="setup-status">Generating…</span>
+      </div>
+    </div>
+    <div class="or-div"><span>or join a room</span></div>
+    <div class="join-row">
+      <input id="join-input" class="join-input" maxlength="4" placeholder="CODE"
+             oninput="this.value=this.value.toUpperCase()"
+             onkeydown="if(event.key==='Enter')UI.joinRoom()"/>
+      <button class="join-btn" onclick="UI.joinRoom()">Join</button>
+    </div>
+    <div class="waiting-list" id="waiting-list" style="display:none">
+      <div class="waiting-lbl">Players in room</div>
+      <div id="waiting-players"></div>
+    </div>
+  </div>
+
+  <button class="primary-btn" id="start-btn" onclick="UI.startGame()" disabled>Start Game</button>
+</div>
+
+<!-- ── GAME ── -->
+<div id="screen-game" class="screen">
+  <div class="game-bar">
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="icon-btn" onclick="UI.confirmQuit()">✕</button>
+    </div>
+    <div class="timer-box" id="timer-box">0:00</div>
+    <div class="chips">
+      <span class="diff-chip" id="diff-chip">Easy</span>
+      <span class="mode-chip" id="mode-chip">Solo</span>
+    </div>
+  </div>
+
+  <div class="puzzle-banner" id="puzzle-banner">
+    Playing puzzle <strong id="puzzle-num">1</strong> of <strong id="puzzle-total">15</strong>
+    &nbsp;·&nbsp; <span id="puzzle-diff">Easy</span>
+  </div>
+
+  <div class="scorebar" id="scorebar"></div>
+
+  <div class="board-wrap">
+    <div class="board" id="board"></div>
+  </div>
+
+  <div class="numpad" id="numpad"></div>
+
+  <div class="action-strip">
+    <button class="act-btn" onclick="UI.doErase()">⌫ Erase</button>
+    <button class="act-btn" onclick="UI.doHint()">💡 Hint <span id="hint-left" class="chip">3</span></button>
+    <button class="act-btn" id="notes-btn" onclick="UI.toggleNotes()">✏️ Notes</button>
+    <button class="act-btn" onclick="UI.doCheck()">✓ Check</button>
+  </div>
+
+  <div class="conn-bar" id="conn-bar">
+    <span class="sync-dot" id="game-dot"></span>
+    <span id="game-conn-label">Offline</span>
+    <span id="game-conn-detail" class="conn-detail"></span>
+  </div>
+</div>
+
+<!-- ── RESULT ── -->
+<div id="screen-result" class="screen">
+  <div class="result-inner">
+    <div class="result-trophy" id="result-trophy">🏆</div>
+    <h2 id="result-title">Complete!</h2>
+    <p id="result-sub" class="result-sub"></p>
+    <div id="result-cards" class="result-cards"></div>
+    <button class="primary-btn" onclick="UI.playAgain()">Play Again</button>
+    <button class="ghost-btn" onclick="UI.goHome()">Home</button>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<!-- Celebration overlay (shared) -->
+<div class="celebrate" id="celebrate" style="display:none">
+  <div class="celebrate-bubble">
+    <div class="cel-emoji" id="cel-emoji">🎉</div>
+    <div class="cel-msg" id="cel-msg">Correct!</div>
+    <div class="cel-sub" id="cel-sub"></div>
+  </div>
+</div>
+
+<script src="src/js/puzzles.js"></script>
+<script src="src/js/game.js"></script>
+<script src="src/js/realtime.js"></script>
+<script src="src/js/ui.js"></script>
+</body>
+</html>
