@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Live Navagraha Planetary Positions mapped to Carnatic Ragas — explore how celestial bodies align with sacred music and the human circadian rhythm.">
+  <title>Navagraha Ragas · Planets & Carnatic Music</title>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Navagraha Ragas · Planets & Carnatic Music">
+  <meta property="og:description" content="Live planetary positions mapped to classical Carnatic ragas. Explore the ancient science of sound, time, and healing.">
+  <meta property="og:type" content="website">
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Favicon as inline SVG data URI -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☉</text></svg>">
+</head>
+<body>
+
+<!-- ════════════════════ NAVIGATION ════════════════════ -->
+<nav class="nav">
+  <a href="#" class="nav-brand" onclick="showPage('dashboard')">
+    <span class="nav-logo">☉</span>
+    <span>
+      <span class="nav-title">Navagraha Ragas</span>
+      <span class="nav-subtitle">Planets · Carnatic Music · Circadian Rhythm</span>
+    </span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('dashboard')" data-page="dashboard" class="active">Dashboard</a></li>
+    <li><a href="#" onclick="showPage('ragas')"     data-page="ragas">Ragas</a></li>
+    <li><a href="#" onclick="showPage('circadian')" data-page="circadian">Circadian</a></li>
+    <li><a href="#" onclick="showPage('about')"     data-page="about">About</a></li>
+  </ul>
+
+  <div class="nav-clock">
+    <span id="live-time">—</span>
+    <span id="live-date" style="font-size:0.68rem;color:var(--text-dim)"></span>
+  </div>
+</nav>
+
+
+<!-- ════════════════════ PAGE: DASHBOARD ════════════════════ -->
+<section class="page active" id="page-dashboard">
+
+  <div class="dashboard-layout">
+
+    <!-- Top bar -->
+    <div class="dash-topbar">
+      <div class="dash-topbar-left">
+        <span class="current-raga-label">Current Raga of the Hour</span>
+        <span class="current-raga-name" id="current-raga-display">—</span>
+        <span class="current-raga-mood" id="current-mood">Loading...</span>
+        <div class="time-progress-bar">
+          <div id="time-progress" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:0.5rem;align-items:center">
+        <button onclick="refreshVariant()" class="rc-play-mini" title="Switch to a new random dashboard layout">
+          ⟳ New Layout
+        </button>
+      </div>
+    </div>
+
+    <!-- Visual area -->
+    <div class="dash-visual-wrap">
+      <div id="dashboard-visual"></div>
+    </div>
+
+    <!-- Sidebar: Info Panel -->
+    <div class="dash-sidebar">
+      <div id="info-panel">
+        <div style="padding:2rem;text-align:center;color:var(--text-dim)">
+          Loading planetary data...
+        </div>
+      </div>
+    </div>
+
+    <!-- Planet Table -->
+    <div class="planet-table-section">
+      <div class="section-title">☽ Live Navagraha Sidereal Positions & Raga Associations</div>
+      <table class="planet-table">
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Graha</th>
+            <th>Raga</th>
+            <th>Rashi (Zodiac)</th>
+            <th>Degree</th>
+            <th>Optimal Time</th>
+            <th>Active Now</th>
+          </tr>
+        </thead>
+        <tbody id="planet-table-body"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- 24-hour timeline -->
+  <div class="timeline-section">
+    <div class="section-title">◉ 24-Hour Raga · Circadian Timeline</div>
+    <div class="timeline-grid" id="timeline-grid"></div>
+  </div>
+
+</section>
+
+
+<!-- ════════════════════ PAGE: RAGAS ════════════════════ -->
+<section class="page" id="page-ragas">
+  <div class="page-inner">
+    <div class="page-hero">
+      <h1 class="page-hero-title">Navagraha Kritis<br>Carnatic Ragas of the Nine Planets</h1>
+      <p class="page-hero-sub">
+        Composed by the great Muthuswami Dikshitar (1775–1835), each raga is a sonic invocation
+        of a celestial being — a vibration that resonates with the cosmos.
+      </p>
+    </div>
+
+    <div class="raga-cards" id="raga-cards-container"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ PAGE: CIRCADIAN ════════════════════ -->
+<section class="page" id="page-circadian">
+  <div class="page-inner">
+    <div class="page-hero">
+      <h1 class="page-hero-title">Ragas & the<br>Human Circadian Rhythm</h1>
+      <p class="page-hero-sub">
+        Ancient Indian musicians mapped sound to time with extraordinary precision.
+        Modern chronobiology confirms what the Natyashastra described 2000 years ago:
+        specific frequencies at specific times amplify the body's own healing intelligence.
+      </p>
+    </div>
+
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:2rem;">
+      <h2 style="font-family:var(--font-display);color:var(--gold);font-size:1.1rem;margin-bottom:0.75rem;">
+        The Science of Nada Yoga
+      </h2>
+      <p style="font-size:0.9rem;color:var(--text-dim);line-height:1.75;margin-bottom:0.75rem;">
+        Raga time theory (Gaanakala Niyama) predates modern chronobiology by two millennia.
+        The Silappatikaram (1st–2nd century CE) classified Tamil panns into Pakalpann (daytime), Iravupann (night)
+        and Podupann (universal). Each corresponds to measurable physiological states:
+      </p>
+      <ul style="font-size:0.88rem;color:var(--text-dim);line-height:1.8;padding-left:1.25rem;">
+        <li>Morning ragas with <strong style="color:var(--gold)">Gandhar-dominant</strong> scales stimulate cortisol and alertness</li>
+        <li>Midday ragas with <strong style="color:var(--gold)">Pancham emphasis</strong> support physical peak performance</li>
+        <li>Evening ragas with <strong style="color:var(--gold)">komal (flattened) notes</strong> activate the parasympathetic system</li>
+        <li>Night ragas with <strong style="color:var(--gold)">Nishad-heavy scales</strong> trigger melatonin and deep sleep</li>
+        <li><strong style="color:var(--gold)">Brahma Muhurta ragas</strong> (4–6 AM) activate the pineal gland during its peak secretion window</li>
+      </ul>
+    </div>
+
+    <div class="section-title">The 9 Circadian Phases</div>
+    <div class="circadian-timeline" id="circadian-timeline"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ PAGE: ABOUT ════════════════════ -->
+<section class="page" id="page-about">
+  <div class="page-inner">
+    <div class="page-hero">
+      <h1 class="page-hero-title">About This Project</h1>
+      <p class="page-hero-sub">
+        An exploration of the sacred intersection between Vedic astronomy,
+        South Indian classical music, and the science of biological rhythms.
+      </p>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>☉ Planetary Positions</h3>
+        <p>
+          Planetary positions are calculated using the Lahiri ayanamsha (sidereal zodiac),
+          as used in Jyotisha (Vedic astrology). The reference page Drikpanchang.com
+          uses the same sidereal coordinate system for its calculations.
+          Data refreshes in real time with each page load.
+        </p>
+      </div>
+
+      <div class="about-card">
+        <h3>♩ Navagraha Kritis</h3>
+        <p>
+          Muthuswami Dikshitar (1775–1835), one of the Carnatic Music Trinity,
+          composed nine sacred kritis — one for each Navagraha (celestial body).
+          He selected ragas whose emotional and tonal qualities mirror each planet's
+          cosmic function. These remain the canonical planetary raga assignments.
+        </p>
+      </div>
+
+      <div class="about-card">
+        <h3>◉ Circadian Alignment</h3>
+        <p>
+          The human body operates on a 24-hour biological clock governed by light, temperature,
+          and hormonal cycles. Raga time theory aligns specific scales with these physiological
+          phases, offering a musical tool for supporting natural rhythms — from cortisol peaks
+          to melatonin secretion and deep sleep cycles.
+        </p>
+      </div>
+
+      <div class="about-card">
+        <h3>🎵 Audio Synthesis</h3>
+        <p>
+          All audio is generated in real time using the Web Audio API — no audio files are downloaded.
+          The synthesizer models sitar timbre using sawtooth oscillators with sympathetic string
+          detuning, and tabla-like percussion using frequency-modulated sine waves with characteristic
+          bayan and tun envelopes.
+        </p>
+      </div>
+
+      <div class="about-card">
+        <h3>✦ Dashboard Variants</h3>
+        <p>
+          Each visit randomly loads one of four dashboard UX variants:
+          Mandala (planetary wheel), Cosmos (star grid), Tāla (rhythmic tabla layout),
+          and Yantra (sacred geometry view). The "New Layout" button lets you cycle through them.
+        </p>
+      </div>
+
+      <div class="about-card">
+        <h3>📚 References</h3>
+        <p>
+          Drikpanchang.com (sidereal planetary positions) ·
+          Muthuswami Dikshitar's Navagraha Kritis ·
+          Silappatikaram (Ganakala Niyama) ·
+          Natyashastra (sound-time theory) ·
+          P. Sambamurthi's Carnatic Music classifications ·
+          Modern chronobiology (Russell Foster, Satchin Panda).
+        </p>
+      </div>
+    </div>
+
+    <div style="margin-top:2rem;text-align:center;color:var(--text-dim);font-size:0.8rem;font-family:var(--font-ui)">
+      <p>Built with HTML5 · CSS3 · Vanilla JavaScript · Web Audio API</p>
+      <p style="margin-top:0.4rem;color:var(--text-faint)">
+        No external dependencies · No audio files · Works offline after first load
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ SCRIPTS ════════════════════ -->
+<script src="js/data.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/ux-variants.js"></script>
+<script src="js/dashboard.js"></script>
+
+<script>
+// ── Page navigation ──
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name)?.classList.add('active');
+  document.querySelectorAll('[data-page]').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === name);
+  });
+
+  if (name === 'ragas') buildRagaCards();
+  if (name === 'circadian') buildCircadianPage();
+}
+
+// ── Refresh to new variant ──
+function refreshVariant() {
+  DashboardUX.stopAnimations();
+  Dashboard.variant = DashboardUX.pickVariant();
+  document.documentElement.setAttribute('data-variant', Dashboard.variant);
+  Dashboard.render();
+
+  const badge = document.querySelector('.variant-badge');
+  if (badge) badge.remove();
+  Dashboard.showVariantBadge();
+}
+
+// ── Build timeline ──
+function buildTimeline() {
+  const grid = document.getElementById('timeline-grid');
+  if (!grid) return;
+
+  RAGA_DATA.timeRagas.forEach((entry, hour) => {
+    const planet = RAGA_DATA.planets.find(p => p.id === entry.planet);
+    const cell = document.createElement('div');
+    cell.className = 'timeline-cell';
+    cell.setAttribute('data-hour', hour);
+    cell.style.background = planet ? planet.color + '22' : '#222';
+    cell.style.borderBottom = `2px solid ${planet?.color || '#444'}44`;
+    cell.title = `${hour}:00 — ${entry.raga}\n${entry.mood}`;
+    cell.innerHTML = `
+      <span class="tl-hour">${hour}</span>
+      <span class="tl-sym">${planet?.symbol || '·'}</span>
+    `;
+    cell.addEventListener('click', () => {
+      showPage('dashboard');
+      Dashboard.selectPlanet(entry.planet);
+    });
+    grid.appendChild(cell);
+  });
+}
+
+// ── Build Raga Cards ──
+function buildRagaCards() {
+  const container = document.getElementById('raga-cards-container');
+  if (!container || container.children.length > 0) return;
+
+  RAGA_DATA.planets.forEach(planet => {
+    const card = document.createElement('div');
+    card.className = 'raga-card';
+    card.style.setProperty('--card-color', planet.color);
+    card.style.setProperty('--card-glow', planet.glowColor);
+
+    card.innerHTML = `
+      <div class="raga-card-header">
+        <div class="rc-symbol">${planet.symbol}</div>
+        <div class="rc-info">
+          <div class="rc-planet">${planet.name} · ${planet.english}</div>
+          <div class="rc-raga">${planet.raga}</div>
+        </div>
+      </div>
+      <div class="raga-card-body">
+        <div class="rc-timing">${planet.timeLabel}</div>
+        <p class="rc-desc">${planet.description}</p>
+        <div class="rc-aroha">
+          <span style="color:var(--gold-dim);font-family:var(--font-ui);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em">Arohanam · </span>
+          ${planet.arohanam}
+          <span style="color:var(--gold-dim);font-family:var(--font-ui);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em"> · Avarohanam · </span>
+          ${planet.avarohanam}
+        </div>
+        <div style="margin-top:0.6rem;font-size:0.8rem;color:var(--text-dim)">
+          <strong style="color:var(--gold-dim)">Healing:</strong> ${planet.healingProperty.split('.')[0]}.
+        </div>
+        <div style="margin-top:0.4rem;font-size:0.8rem;color:var(--text-dim)">
+          <strong style="color:var(--gold-dim)">Kriti:</strong> <em>${planet.kriti}</em>
+        </div>
+        <button class="rc-play-mini" onclick="playRagaFromCard('${planet.id}', this)">
+          ▶ Listen (30s Sitar + Tabla)
+        </button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function playRagaFromCard(planetId, btn) {
+  const planet = RAGA_DATA.planets.find(p => p.id === planetId);
+  if (!planet) return;
+
+  if (RagaAudio.playing) {
+    RagaAudio.stopAll();
+    document.querySelectorAll('.rc-play-mini').forEach(b => {
+      if (b.textContent.includes('■')) b.textContent = '▶ Listen (30s Sitar + Tabla)';
+    });
+    return;
+  }
+
+  document.querySelectorAll('.rc-play-mini').forEach(b => {
+    b.textContent = '▶ Listen (30s Sitar + Tabla)';
+  });
+
+  btn.textContent = `■ Stop ${planet.raga}`;
+  RagaAudio.playRaga(planet.raga, () => {
+    btn.textContent = '▶ Listen (30s Sitar + Tabla)';
+  });
+}
+
+// ── Build Circadian Page ──
+function buildCircadianPage() {
+  const container = document.getElementById('circadian-timeline');
+  if (!container || container.children.length > 0) return;
+
+  RAGA_DATA.circadianInfo.phases.forEach(phase => {
+    const raga = RAGA_DATA.planets.find(p => p.raga === phase.raga);
+
+    const div = document.createElement('div');
+    div.className = 'circ-phase';
+    div.style.setProperty('--phase-color', raga?.color || '#F5C842');
+
+    div.innerHTML = `
+      <div class="cp-time-block">
+        <div class="cp-symbol">${raga?.symbol || '☉'}</div>
+        <div class="cp-time">${phase.time}</div>
+        <div class="cp-name">${raga?.name || phase.name}</div>
+      </div>
+      <div class="cp-content">
+        <div class="cp-phase-name">${phase.name}</div>
+        <div class="cp-raga-name">${phase.raga}</div>
+        <p class="cp-effect">${phase.effect}</p>
+        <div style="margin-top:0.5rem">
+          <button class="rc-play-mini" onclick="playRagaFromCard('${raga?.id || 'surya'}', this)">
+            ▶ Listen
+          </button>
+        </div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// ── Update current raga display ──
+function updateCurrentRagaDisplay() {
+  const current = PlanetCalc.getCurrentRaga();
+  const planet = RAGA_DATA.planets.find(p => p.id === current?.planet);
+  const el = document.getElementById('current-raga-display');
+  if (el && planet) {
+    el.textContent = planet.raga;
+    el.style.color = planet.glowColor;
+  }
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', () => {
+  buildTimeline();
+  updateCurrentRagaDisplay();
+  Dashboard.init();
+});
+</script>
+</body>
+</html>
