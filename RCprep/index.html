@@ -1,0 +1,2303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>RC Interview — Interview Prep Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+/* ══════════════════════════════════════════════
+   DESIGN TOKENS
+══════════════════════════════════════════════ */
+:root {
+  --bg:#07090f;
+  --surface:#0f1420;
+  --surface2:#151d2e;
+  --surface3:#1a2438;
+  --border:#1e2d47;
+  --border2:#253450;
+  --accent:#00cfa8;
+  --accent-dim:rgba(0,207,168,0.12);
+  --accent2:#ff5c35;
+  --accent3:#6d5fff;
+  --gold:#f0b429;
+  --text:#dde4f0;
+  --text2:#8a9ab8;
+  --text3:#4a5a78;
+  --nav-h:58px;
+  --panel-w:320px;
+  --radius:10px;
+  --transition:0.2s ease;
+}
+
+/* ══ RESET ══ */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:15px;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;}
+button{font-family:'DM Sans',sans-serif;cursor:pointer;}
+input,textarea{font-family:'DM Sans',sans-serif;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px;}
+
+/* ══ TOPBAR ══ */
+#topbar{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  height:var(--nav-h);
+  background:rgba(7,9,15,0.94);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:0;
+  padding:0 1.25rem;
+}
+.tb-brand{
+  font-family:'Fraunces',serif;font-weight:900;
+  font-size:1.15rem;color:var(--accent);
+  letter-spacing:-0.5px;white-space:nowrap;
+  margin-right:1.5rem;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.tb-brand-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 8px var(--accent);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.tb-jd-tabs{
+  display:flex;gap:0.25rem;overflow-x:auto;
+  scrollbar-width:none;flex:1;
+}
+.tb-jd-tabs::-webkit-scrollbar{display:none;}
+.jd-tab{
+  padding:0.35rem 1rem;border-radius:6px;
+  font-size:0.78rem;font-weight:500;
+  color:var(--text2);
+  cursor:pointer;border:1px solid transparent;
+  background:transparent;white-space:nowrap;
+  transition:all var(--transition);
+  display:flex;align-items:center;gap:0.4rem;
+}
+.jd-tab:hover{color:var(--text);background:var(--surface2);}
+.jd-tab.active{
+  color:var(--accent);
+  background:var(--accent-dim);
+  border-color:rgba(0,207,168,0.2);
+}
+.jd-tab .jd-tab-close{
+  width:14px;height:14px;border-radius:50%;
+  background:transparent;border:none;
+  color:var(--text3);font-size:0.7rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--transition);
+}
+.jd-tab .jd-tab-close:hover{background:rgba(255,92,53,0.2);color:var(--accent2);}
+.tb-right{
+  display:flex;align-items:center;gap:0.5rem;
+  margin-left:auto;padding-left:1rem;
+  border-left:1px solid var(--border);flex-shrink:0;
+}
+.btn-upload-jd{
+  padding:0.4rem 1rem;
+  border-radius:6px;border:1px dashed var(--border2);
+  background:transparent;color:var(--text2);
+  font-size:0.75rem;font-weight:600;
+  transition:all var(--transition);
+  display:flex;align-items:center;gap:0.35rem;
+}
+.btn-upload-jd:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.tb-progress-chip{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.72rem;color:var(--accent);
+  background:var(--accent-dim);
+  border:1px solid rgba(0,207,168,0.2);
+  border-radius:20px;padding:0.3rem 0.75rem;
+  white-space:nowrap;
+}
+
+/* ══ LAYOUT ══ */
+#app-layout{
+  display:flex;
+  padding-top:var(--nav-h);
+  min-height:100vh;
+}
+
+/* ══ LEFT SIDEBAR (section nav) ══ */
+#sidebar{
+  width:220px;flex-shrink:0;
+  border-right:1px solid var(--border);
+  position:sticky;top:var(--nav-h);
+  height:calc(100vh - var(--nav-h));
+  overflow-y:auto;
+  background:var(--surface);
+  padding:1.25rem 0;
+  transition:transform 0.3s;
+}
+.sidebar-section-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.62rem;text-transform:uppercase;
+  letter-spacing:1.5px;color:var(--text3);
+  padding:0.6rem 1.25rem 0.35rem;
+}
+.sidebar-item{
+  display:flex;align-items:center;gap:0.6rem;
+  padding:0.55rem 1.25rem;
+  font-size:0.8rem;color:var(--text2);
+  cursor:pointer;
+  border-left:2px solid transparent;
+  transition:all var(--transition);
+  position:relative;
+}
+.sidebar-item:hover{color:var(--text);background:var(--surface2);}
+.sidebar-item.active{
+  color:var(--accent);
+  background:var(--accent-dim);
+  border-left-color:var(--accent);
+}
+.sidebar-item-icon{font-size:0.9rem;width:18px;text-align:center;flex-shrink:0;}
+.sidebar-item-check{
+  margin-left:auto;width:14px;height:14px;
+  border-radius:50%;border:1.5px solid var(--border2);
+  flex-shrink:0;display:flex;align-items:center;
+  justify-content:center;font-size:0.55rem;
+  transition:all var(--transition);
+}
+.sidebar-item-check.done{
+  background:var(--accent);border-color:var(--accent);color:#07090f;font-weight:900;
+}
+.sidebar-sub{
+  padding-left:2.5rem;
+}
+.sidebar-sub .sidebar-item{
+  font-size:0.75rem;padding:0.4rem 1.25rem 0.4rem 0;
+}
+
+/* ══ MAIN CONTENT ══ */
+#main{
+  flex:1;min-width:0;
+  padding:2rem 2rem 4rem;
+  max-width:900px;
+}
+
+/* ══ RIGHT PANEL (completed items) ══ */
+#right-panel{
+  width:var(--panel-w);flex-shrink:0;
+  border-left:1px solid var(--border);
+  position:sticky;top:var(--nav-h);
+  height:calc(100vh - var(--nav-h));
+  overflow-y:auto;
+  background:var(--surface);
+  padding:1.25rem;
+  transition:transform 0.3s;
+}
+.rp-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1rem;
+  padding-bottom:0.85rem;
+  border-bottom:1px solid var(--border);
+}
+.rp-title{
+  font-family:'Fraunces',serif;
+  font-size:0.95rem;font-weight:600;
+  color:var(--text);
+}
+.rp-count{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.7rem;color:var(--accent);
+  background:var(--accent-dim);
+  border-radius:20px;padding:0.15rem 0.55rem;
+  border:1px solid rgba(0,207,168,0.2);
+}
+.rp-empty{
+  text-align:center;padding:2rem 1rem;
+  color:var(--text3);font-size:0.78rem;
+  line-height:1.6;
+}
+.rp-empty-icon{font-size:2rem;margin-bottom:0.5rem;}
+.completed-item{
+  display:flex;align-items:flex-start;gap:0.6rem;
+  padding:0.65rem 0.75rem;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:8px;margin-bottom:0.5rem;
+  animation:slideFromRight 0.3s ease;
+  position:relative;
+}
+@keyframes slideFromRight{
+  from{opacity:0;transform:translateX(20px)}
+  to{opacity:1;transform:translateX(0)}
+}
+.completed-item-icon{
+  width:22px;height:22px;border-radius:6px;
+  background:rgba(0,207,168,0.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.7rem;flex-shrink:0;color:var(--accent);
+  font-weight:900;
+}
+.completed-item-body{flex:1;min-width:0;}
+.completed-item-label{
+  font-size:0.76rem;font-weight:500;
+  color:var(--text);line-height:1.3;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.completed-item-section{
+  font-size:0.66rem;color:var(--text3);margin-top:0.15rem;
+}
+.completed-item-undo{
+  background:transparent;border:none;
+  color:var(--text3);font-size:0.7rem;
+  padding:0.15rem;cursor:pointer;
+  transition:color var(--transition);flex-shrink:0;
+}
+.completed-item-undo:hover{color:var(--accent2);}
+.rp-clear-btn{
+  width:100%;margin-top:0.75rem;
+  padding:0.5rem;border-radius:6px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--text3);font-size:0.74rem;
+  transition:all var(--transition);
+}
+.rp-clear-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+
+/* ══ HERO SECTION ══ */
+.page-hero{
+  background:linear-gradient(135deg,#0a1020,#0f1830);
+  border:1px solid var(--border);
+  border-radius:14px;padding:2rem 2.5rem;
+  margin-bottom:2rem;position:relative;overflow:hidden;
+}
+.page-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 75% 40%,rgba(0,207,168,0.07) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.65rem;color:var(--accent);
+  text-transform:uppercase;letter-spacing:2px;
+  margin-bottom:0.6rem;
+}
+.hero-title{
+  font-family:'Fraunces',serif;
+  font-size:1.9rem;font-weight:900;
+  line-height:1.15;color:var(--text);
+}
+.hero-sub{
+  font-size:0.82rem;color:var(--text2);
+  margin-top:0.45rem;line-height:1.6;
+}
+.hero-chips{display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:1rem;}
+.hero-chip{
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);
+  border-radius:20px;padding:0.25rem 0.75rem;
+  font-size:0.72rem;color:var(--text2);
+}
+.hero-chip strong{color:var(--text);}
+
+/* ══ SECTION TITLES ══ */
+.sec-title{
+  font-family:'Fraunces',serif;
+  font-size:1.2rem;font-weight:600;
+  color:var(--text);margin-bottom:0.2rem;
+}
+.sec-divider{
+  width:32px;height:2px;border-radius:2px;
+  background:var(--accent);margin-bottom:1.25rem;
+  margin-top:0.35rem;
+}
+.sec-sub{font-size:0.78rem;color:var(--text2);margin-bottom:1.25rem;}
+
+/* ══ CLICKABLE TOPIC CARDS ══ */
+.topic-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:0.85rem;margin-bottom:2rem;
+}
+.topic-card{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.1rem 1.25rem;
+  cursor:pointer;
+  transition:all var(--transition);
+  display:flex;flex-direction:column;gap:0.4rem;
+  position:relative;overflow:hidden;
+}
+.topic-card::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:2px;
+  background:var(--accent);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 0.25s ease;
+}
+.topic-card:hover{border-color:rgba(0,207,168,0.3);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.3);}
+.topic-card:hover::after{transform:scaleX(1);}
+.topic-card.done{
+  border-color:rgba(0,207,168,0.25);
+  background:rgba(0,207,168,0.04);
+}
+.topic-card.done::after{transform:scaleX(1);background:var(--accent);}
+.tc-icon{font-size:1.3rem;margin-bottom:0.2rem;}
+.tc-title{font-size:0.88rem;font-weight:600;color:var(--text);line-height:1.3;}
+.tc-sub{font-size:0.72rem;color:var(--text2);line-height:1.4;}
+.tc-arrow{
+  margin-top:auto;font-size:0.72rem;color:var(--text3);
+  display:flex;align-items:center;gap:0.3rem;
+  transition:color var(--transition);
+}
+.topic-card:hover .tc-arrow{color:var(--accent);}
+.tc-done-badge{
+  position:absolute;top:0.6rem;right:0.6rem;
+  background:var(--accent);color:#07090f;
+  font-size:0.6rem;font-weight:900;
+  border-radius:20px;padding:0.15rem 0.45rem;
+}
+
+/* ══ STAT GRID ══ */
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:0.75rem;margin-bottom:2rem;
+}
+.stat-card{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1rem;text-align:center;
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:3px;
+}
+.stat-card.teal::before{background:var(--accent);}
+.stat-card.orange::before{background:var(--accent2);}
+.stat-card.purple::before{background:var(--accent3);}
+.stat-card.gold::before{background:var(--gold);}
+.stat-icon{font-size:1.4rem;margin-bottom:0.35rem;}
+.stat-label{font-size:0.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+.stat-value{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:700;color:var(--text);margin:0.2rem 0;}
+.stat-desc{font-size:0.69rem;color:var(--text2);line-height:1.4;}
+
+/* ══ DETAIL PAGE (sub-page opened from topic card) ══ */
+#detail-overlay{
+  display:none;
+  position:fixed;inset:0;z-index:800;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(8px);
+  padding-top:var(--nav-h);
+  overflow-y:auto;
+}
+#detail-overlay.open{display:flex;flex-direction:column;}
+#detail-page{
+  background:var(--bg);
+  min-height:calc(100vh - var(--nav-h));
+  width:100%;
+  animation:slideUp 0.3s ease;
+  display:flex;
+}
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+#detail-sidebar{
+  width:260px;flex-shrink:0;
+  border-right:1px solid var(--border);
+  position:sticky;top:0;
+  height:calc(100vh - var(--nav-h));
+  overflow-y:auto;
+  background:var(--surface);
+  padding:1.5rem 0;
+}
+.detail-sidebar-header{
+  padding:0 1.25rem 1rem;
+  border-bottom:1px solid var(--border);
+  margin-bottom:0.75rem;
+}
+.detail-sidebar-back{
+  display:flex;align-items:center;gap:0.5rem;
+  font-size:0.76rem;color:var(--text2);
+  cursor:pointer;margin-bottom:0.75rem;
+  transition:color var(--transition);
+}
+.detail-sidebar-back:hover{color:var(--accent);}
+.detail-sidebar-title{
+  font-family:'Fraunces',serif;
+  font-size:1rem;font-weight:600;color:var(--text);
+  line-height:1.3;
+}
+.detail-sidebar-subtitle{
+  font-size:0.72rem;color:var(--text2);margin-top:0.2rem;
+}
+.detail-nav-item{
+  display:flex;align-items:center;gap:0.6rem;
+  padding:0.5rem 1.25rem;
+  font-size:0.78rem;color:var(--text2);
+  cursor:pointer;border-left:2px solid transparent;
+  transition:all var(--transition);
+}
+.detail-nav-item:hover{color:var(--text);background:var(--surface2);}
+.detail-nav-item.active{
+  color:var(--accent);
+  background:var(--accent-dim);
+  border-left-color:var(--accent);
+}
+.detail-nav-item-check{
+  margin-left:auto;width:14px;height:14px;
+  border-radius:50%;border:1.5px solid var(--border2);
+  flex-shrink:0;display:flex;align-items:center;
+  justify-content:center;font-size:0.55rem;
+}
+.detail-nav-item-check.done{
+  background:var(--accent);border-color:var(--accent);
+  color:#07090f;font-weight:900;
+}
+#detail-main{
+  flex:1;min-width:0;
+  padding:2rem 2.5rem 4rem;
+  max-width:750px;
+}
+.detail-section{display:none;}
+.detail-section.active{display:block;}
+
+/* ══ CHECKLIST ITEMS ══ */
+.checklist-block{margin-bottom:1.5rem;}
+.cl-group-title{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.62rem;text-transform:uppercase;
+  letter-spacing:1.5px;color:var(--text3);
+  margin-bottom:0.6rem;padding-left:0.25rem;
+}
+.cl-item{
+  display:flex;align-items:flex-start;gap:0.75rem;
+  padding:0.7rem 0.9rem;
+  border-radius:8px;border:1px solid var(--border);
+  background:var(--surface2);
+  margin-bottom:0.4rem;cursor:pointer;
+  transition:all var(--transition);
+  position:relative;
+}
+.cl-item:hover{border-color:rgba(0,207,168,0.25);background:rgba(0,207,168,0.03);}
+.cl-item.checked{
+  background:rgba(0,207,168,0.04);
+  border-color:rgba(0,207,168,0.2);
+}
+.cl-item.checked .cl-label{text-decoration:line-through;color:var(--text3);}
+.cl-box{
+  width:18px;height:18px;border-radius:5px;
+  border:2px solid var(--border2);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  margin-top:1px;transition:all var(--transition);
+}
+.cl-item.checked .cl-box{
+  background:var(--accent);border-color:var(--accent);color:#07090f;
+}
+.cl-checkmark{font-size:0.6rem;font-weight:900;display:none;}
+.cl-item.checked .cl-checkmark{display:block;}
+.cl-label{font-size:0.83rem;color:var(--text);line-height:1.4;}
+.cl-sub{font-size:0.72rem;color:var(--text2);margin-top:0.2rem;line-height:1.4;}
+.cl-send-badge{
+  margin-left:auto;font-size:0.62rem;
+  background:var(--accent-dim);border:1px solid rgba(0,207,168,0.2);
+  border-radius:20px;padding:0.12rem 0.45rem;
+  color:var(--accent);white-space:nowrap;flex-shrink:0;
+  display:none;
+}
+.cl-item.checked .cl-send-badge{display:block;}
+
+/* ══ FILE UPLOAD ZONE ══ */
+.upload-zone{
+  border:2px dashed var(--border2);
+  border-radius:12px;padding:2rem;
+  text-align:center;cursor:pointer;
+  transition:all var(--transition);
+  margin-bottom:1.5rem;
+  background:var(--surface2);
+  position:relative;
+}
+.upload-zone:hover,.upload-zone.dragover{
+  border-color:var(--accent);
+  background:rgba(0,207,168,0.04);
+}
+.upload-zone-icon{font-size:2rem;margin-bottom:0.5rem;}
+.upload-zone-title{font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:0.25rem;}
+.upload-zone-sub{font-size:0.75rem;color:var(--text2);}
+.upload-zone input[type=file]{
+  position:absolute;inset:0;opacity:0;cursor:pointer;
+}
+.upload-result{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:1rem;margin-bottom:1rem;
+}
+.upload-result-title{
+  font-size:0.78rem;font-weight:600;color:var(--accent);
+  margin-bottom:0.5rem;
+  display:flex;align-items:center;gap:0.35rem;
+}
+
+/* ══ CONTENT CARDS ══ */
+.content-card{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.25rem;margin-bottom:1rem;
+}
+.content-card-title{
+  font-family:'Fraunces',serif;
+  font-size:0.95rem;font-weight:600;
+  color:var(--text);margin-bottom:0.5rem;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.content-card-body{
+  font-size:0.82rem;color:var(--text2);
+  line-height:1.65;
+}
+.content-card-body ul{padding-left:1.25rem;}
+.content-card-body li{margin-bottom:0.35rem;}
+.content-card-body strong{color:var(--text);}
+
+/* ══ ARTICLE LINKS ══ */
+.article-link{
+  display:flex;align-items:flex-start;gap:0.75rem;
+  padding:0.85rem 1rem;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;margin-bottom:0.5rem;
+  transition:all var(--transition);cursor:pointer;
+  text-decoration:none;
+}
+.article-link:hover{
+  border-color:rgba(0,207,168,0.25);
+  transform:translateX(3px);
+  text-decoration:none;
+}
+.al-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--accent-dim);color:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.9rem;flex-shrink:0;
+}
+.al-title{font-size:0.8rem;font-weight:600;color:var(--text);line-height:1.3;}
+.al-src{font-size:0.68rem;color:var(--text3);margin-top:0.2rem;}
+
+/* ══ FLASHCARDS ══ */
+.fc-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:0.85rem;margin-bottom:1.5rem;
+}
+.fc-card{
+  perspective:700px;height:150px;cursor:pointer;
+}
+.fc-inner{
+  position:relative;width:100%;height:100%;
+  transform-style:preserve-3d;transition:transform 0.45s ease;
+}
+.fc-card.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{
+  position:absolute;inset:0;
+  backface-visibility:hidden;
+  border-radius:10px;padding:1.1rem;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.fc-front{background:var(--surface2);border:1px solid var(--border);}
+.fc-back{
+  background:linear-gradient(135deg,rgba(0,207,168,0.1),rgba(109,95,255,0.1));
+  border:1px solid rgba(0,207,168,0.2);
+  transform:rotateY(180deg);
+}
+.fc-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.6rem;text-transform:uppercase;
+  letter-spacing:1.5px;color:var(--accent);margin-bottom:0.4rem;
+}
+.fc-q{font-size:0.84rem;font-weight:600;color:var(--text);line-height:1.4;}
+.fc-a{font-size:0.78rem;color:var(--text);line-height:1.5;}
+.fc-hint{font-size:0.65rem;color:var(--text3);margin-top:auto;padding-top:0.4rem;}
+
+/* ══ MCQ ══ */
+.mcq-wrap{margin-bottom:1.5rem;}
+.mcq-progress{
+  height:5px;background:var(--border);border-radius:3px;
+  overflow:hidden;margin-bottom:1rem;
+}
+.mcq-progress-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--accent),var(--accent3));
+  transition:width 0.4s;
+}
+.mcq-card{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.5rem;
+}
+.mcq-counter{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.65rem;color:var(--text3);
+  text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem;
+}
+.mcq-q{
+  font-family:'Fraunces',serif;
+  font-size:1rem;font-weight:600;color:var(--text);
+  line-height:1.4;margin-bottom:1rem;
+}
+.mcq-opts{display:flex;flex-direction:column;gap:0.5rem;}
+.mcq-opt{
+  padding:0.7rem 0.9rem;border-radius:8px;
+  border:1px solid var(--border);background:var(--surface3);
+  font-size:0.82rem;color:var(--text);cursor:pointer;
+  transition:all 0.15s;display:flex;align-items:center;gap:0.65rem;
+}
+.mcq-opt:hover{border-color:rgba(0,207,168,0.3);background:rgba(0,207,168,0.05);}
+.mcq-opt.correct{border-color:var(--accent);background:rgba(0,207,168,0.1);color:var(--accent);}
+.mcq-opt.wrong{border-color:var(--accent2);background:rgba(255,92,53,0.08);color:var(--accent2);}
+.mcq-opt.disabled{pointer-events:none;opacity:0.55;}
+.mcq-opt-l{
+  width:22px;height:22px;border-radius:50%;
+  border:1.5px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.65rem;font-weight:700;flex-shrink:0;
+}
+.mcq-exp{
+  margin-top:0.85rem;padding:0.85rem;
+  background:rgba(0,207,168,0.06);
+  border:1px solid rgba(0,207,168,0.15);
+  border-radius:8px;font-size:0.78rem;
+  color:var(--text);line-height:1.55;display:none;
+}
+.mcq-footer{
+  display:flex;justify-content:space-between;
+  align-items:center;margin-top:1rem;
+}
+.mcq-score{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.75rem;color:var(--text2);
+}
+
+/* ══ BUTTONS ══ */
+.btn{
+  padding:0.55rem 1.2rem;border-radius:7px;
+  font-size:0.79rem;font-weight:600;
+  cursor:pointer;transition:all var(--transition);
+  border:none;
+}
+.btn-primary{background:var(--accent);color:#07090f;}
+.btn-primary:hover{background:#00efc4;}
+.btn-ghost{
+  background:transparent;
+  border:1px solid var(--border);color:var(--text2);
+}
+.btn-ghost:hover{border-color:var(--text);color:var(--text);}
+.btn-sm{padding:0.35rem 0.85rem;font-size:0.72rem;}
+.btn-danger-ghost{
+  background:transparent;
+  border:1px solid var(--border);color:var(--text3);
+}
+.btn-danger-ghost:hover{border-color:var(--accent2);color:var(--accent2);}
+
+/* ══ SKILL BARS ══ */
+.skill-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:0.75rem;margin-bottom:1.5rem;
+}
+.skill-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:0.9rem;
+}
+.skill-row{display:flex;justify-content:space-between;margin-bottom:0.45rem;}
+.skill-name{font-size:0.78rem;font-weight:600;color:var(--text);}
+.skill-pct{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.7rem;color:var(--accent);
+}
+.skill-track{
+  height:4px;background:var(--border);
+  border-radius:3px;overflow:hidden;
+}
+.skill-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--accent),var(--accent3));
+}
+.skill-tags{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.5rem;}
+.skill-tag{
+  font-size:0.62rem;padding:0.1rem 0.45rem;
+  border-radius:3px;background:rgba(0,0,0,0.3);
+  border:1px solid var(--border);color:var(--text3);
+}
+
+/* ══ ACCORDION ══ */
+.accordion-item{
+  border:1px solid var(--border);
+  border-radius:8px;margin-bottom:0.5rem;overflow:hidden;
+}
+.accordion-header{
+  padding:0.85rem 1.1rem;
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;background:var(--surface2);
+  font-size:0.84rem;font-weight:600;color:var(--text);
+  transition:background var(--transition);gap:0.75rem;
+}
+.accordion-header:hover{background:rgba(0,207,168,0.04);}
+.accordion-diff{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.62rem;padding:0.15rem 0.5rem;
+  border-radius:4px;flex-shrink:0;
+}
+.diff-easy{background:rgba(0,207,168,0.1);color:var(--accent);}
+.diff-med{background:rgba(240,180,41,0.1);color:var(--gold);}
+.diff-hard{background:rgba(255,92,53,0.1);color:var(--accent2);}
+.accordion-chevron{color:var(--text3);transition:transform 0.3s;font-size:0.75rem;flex-shrink:0;}
+.accordion-item.open .accordion-chevron{transform:rotate(180deg);}
+.accordion-body{
+  display:none;padding:1.1rem;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  font-size:0.81rem;color:var(--text2);line-height:1.65;
+}
+.accordion-item.open .accordion-body{display:block;}
+.accordion-body ul{padding-left:1.2rem;}
+.accordion-body li{margin-bottom:0.35rem;}
+.accordion-body strong{color:var(--accent);}
+
+/* ══ FLOW DIAGRAM ══ */
+.flow-row{
+  display:flex;align-items:center;gap:0;
+  overflow-x:auto;padding-bottom:0.5rem;
+  margin-bottom:1.5rem;
+}
+.flow-node{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:0.85rem 1rem;
+  min-width:120px;flex-shrink:0;text-align:center;
+}
+.flow-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.58rem;color:var(--accent);
+  text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;
+}
+.flow-icon{font-size:1.25rem;margin-bottom:0.25rem;}
+.flow-title{font-size:0.75rem;font-weight:600;color:var(--text);}
+.flow-sub{font-size:0.65rem;color:var(--text2);margin-top:0.15rem;}
+.flow-arrow{
+  color:var(--text3);font-size:1rem;
+  padding:0 0.3rem;flex-shrink:0;
+}
+
+/* ══ RESOURCE TABLE ══ */
+.res-table{width:100%;border-collapse:collapse;margin-bottom:1.5rem;font-size:0.79rem;}
+.res-table th{
+  text-align:left;padding:0.6rem 0.85rem;
+  background:var(--surface2);
+  border-bottom:2px solid var(--border);
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.62rem;text-transform:uppercase;
+  letter-spacing:1px;color:var(--text3);
+}
+.res-table td{
+  padding:0.6rem 0.85rem;
+  border-bottom:1px solid rgba(30,45,71,0.5);
+  color:var(--text);vertical-align:middle;
+}
+.res-table tr:hover td{background:rgba(0,207,168,0.02);}
+.res-table a{color:var(--accent);}
+.res-badge{
+  font-size:0.62rem;padding:0.15rem 0.5rem;
+  border-radius:20px;font-weight:600;
+}
+.rb-free{background:rgba(0,207,168,0.08);color:var(--accent);border:1px solid rgba(0,207,168,0.2);}
+.rb-paid{background:rgba(255,92,53,0.08);color:var(--accent2);border:1px solid rgba(255,92,53,0.2);}
+.rb-ms{background:rgba(109,95,255,0.08);color:var(--accent3);border:1px solid rgba(109,95,255,0.2);}
+
+/* ══ OVERVIEW PROGRESS ══ */
+.overview-progress-bar{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:2rem;flex-wrap:wrap;
+}
+.opb-ring-wrap{flex-shrink:0;}
+.opb-ring{width:80px;height:80px;}
+.opb-ring circle{fill:none;stroke-width:6;}
+.opb-ring .ring-bg{stroke:var(--border);}
+.opb-ring .ring-fill{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset 0.5s;}
+.opb-label{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:900;fill:var(--accent);}
+.opb-sublabel{font-size:0.58rem;fill:var(--text3);}
+.opb-stats{display:flex;gap:1.5rem;flex-wrap:wrap;flex:1;}
+.opb-stat{text-align:center;}
+.opb-stat-val{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:700;color:var(--text);}
+.opb-stat-val span{font-size:0.85rem;color:var(--text3);}
+.opb-stat-lbl{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;}
+
+/* ══ NOTIFY TOAST ══ */
+#toast{
+  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:30px;padding:0.6rem 1.25rem;
+  font-size:0.78rem;color:var(--text);
+  z-index:2000;transition:transform 0.3s ease;
+  white-space:nowrap;pointer-events:none;
+  box-shadow:0 8px 30px rgba(0,0,0,0.5);
+}
+#toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px){
+  #sidebar{display:none;}
+  #right-panel{display:none;}
+  #main{padding:1.25rem 1rem 3rem;}
+}
+@media(max-width:700px){
+  .detail-sidebar-title{font-size:0.85rem;}
+  #detail-main{padding:1.25rem;}
+  .topic-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ TOPBAR ══════════ -->
+<div id="topbar">
+  <div class="tb-brand">
+    <div class="tb-brand-dot"></div>
+    RC Interview
+  </div>
+  <div class="tb-jd-tabs" id="jd-tabs-container">
+    <!-- JD tabs populated by JS -->
+  </div>
+  <div class="tb-right">
+    <div class="tb-progress-chip" id="tb-progress-chip">0% Ready</div>
+    <button class="btn-upload-jd" onclick="openUploadModal()">
+      <span>＋</span> Add JD
+    </button>
+  </div>
+</div>
+
+<!-- ══════════ MAIN LAYOUT ══════════ -->
+<div id="app-layout">
+
+  <!-- Left sidebar -->
+  <div id="sidebar" id="left-sidebar">
+    <!-- Populated by JS per active JD -->
+  </div>
+
+  <!-- Main content -->
+  <div id="main">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- Right panel -->
+  <div id="right-panel">
+    <div class="rp-header">
+      <div class="rp-title">✓ Completed</div>
+      <div class="rp-count" id="rp-count">0</div>
+    </div>
+    <div id="rp-list">
+      <div class="rp-empty">
+        <div class="rp-empty-icon">📋</div>
+        Check off items to move them here
+      </div>
+    </div>
+    <button class="rp-clear-btn" onclick="clearCompleted()" id="rp-clear-btn" style="display:none">
+      Clear completed
+    </button>
+  </div>
+
+</div>
+
+<!-- ══════════ DETAIL OVERLAY (sub-page) ══════════ -->
+<div id="detail-overlay">
+  <div id="detail-page">
+    <div id="detail-sidebar">
+      <div class="detail-sidebar-header">
+        <div class="detail-sidebar-back" onclick="closeDetail()">← Back</div>
+        <div class="detail-sidebar-title" id="detail-sidebar-title">Topic</div>
+        <div class="detail-sidebar-subtitle" id="detail-sidebar-subtitle"></div>
+      </div>
+      <div id="detail-nav-items"><!-- JS --></div>
+    </div>
+    <div id="detail-main"><!-- JS --></div>
+  </div>
+</div>
+
+<!-- ══════════ UPLOAD JD MODAL ══════════ -->
+<div id="upload-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:480px;width:90%;position:relative;">
+    <button onclick="closeUploadModal()" style="position:absolute;top:1rem;right:1rem;background:transparent;border:none;color:var(--text2);font-size:1.1rem;cursor:pointer;">✕</button>
+    <div style="font-family:'Fraunces',serif;font-size:1.2rem;font-weight:600;margin-bottom:0.35rem;">Add Job Description</div>
+    <div style="font-size:0.78rem;color:var(--text2);margin-bottom:1.25rem;">Upload a PDF or paste text — the app will parse it into sections automatically.</div>
+    <div class="upload-zone" id="modal-upload-zone" onclick="document.getElementById('modal-file-input').click()">
+      <input type="file" id="modal-file-input" accept=".pdf,.txt" onchange="handleModalFileUpload(event)"/>
+      <div class="upload-zone-icon">📄</div>
+      <div class="upload-zone-title">Drop PDF here or click to browse</div>
+      <div class="upload-zone-sub">PDF and TXT files supported</div>
+    </div>
+    <div style="text-align:center;font-size:0.73rem;color:var(--text3);margin:-0.5rem 0 0.85rem;">— or paste text —</div>
+    <textarea id="modal-jd-text" placeholder="Paste your job description here..." style="width:100%;min-height:120px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.85rem;color:var(--text);font-size:0.82rem;resize:vertical;margin-bottom:0.85rem;"></textarea>
+    <input id="modal-jd-name" placeholder="Company & Role (e.g., Google – Senior SRE)" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.7rem 1rem;color:var(--text);font-size:0.82rem;margin-bottom:1rem;"/>
+    <button class="btn btn-primary" style="width:100%" onclick="processAndAddJD()">Create Prep Board →</button>
+  </div>
+</div>
+
+<!-- ══════════ TOAST ══════════ -->
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+/* ════════════════════════════════
+   DATA STORE
+════════════════════════════════ */
+const DB = {
+  jds: [],
+  activeJD: null,
+  completed: JSON.parse(localStorage.getItem('rc-completed') || '{}'),
+  save() { localStorage.setItem('rc-completed', JSON.stringify(this.completed)); }
+};
+
+/* ════════════════════════════════
+   BUILT-IN JD: RAPID CIRCLE
+════════════════════════════════ */
+const RC_JD = {
+  id: 'rc-001',
+  name: 'Rapid Circle',
+  role: 'Technical Writer & Content Creator',
+  company: 'Rapid Circle',
+  location: 'Bengaluru · Full-Time · 8–12 yrs',
+  chips: [
+    { label: 'Experience', value: '8–12 yrs' },
+    { label: 'Domain', value: 'Cloud/SAFe' },
+    { label: 'Stack', value: 'Microsoft 365' },
+    { label: 'Type', value: 'Transformation Docs' }
+  ],
+  sections: [
+    {
+      id: 'overview',
+      icon: '🏠',
+      label: 'Overview',
+      type: 'overview'
+    },
+    {
+      id: 'what-you-will-do',
+      icon: '📋',
+      label: 'What You Will Do',
+      type: 'topics',
+      topics: [
+        {
+          id: 'e2e-docs',
+          icon: '📚',
+          title: 'End-to-End Documentation',
+          sub: 'Playbooks, SOPs, User Manuals, Process Guides',
+          color: 'teal',
+          sections: [
+            {
+              id: 'e2e-overview',
+              label: 'What It Means',
+              checklist: [
+                { id: 'e2e-1', label: 'Understand the full documentation lifecycle', sub: 'Discovery → Draft → Review → Publish → Maintain' },
+                { id: 'e2e-2', label: 'Know the difference between each doc type', sub: 'Playbook vs SOP vs Process Guide vs User Manual' },
+                { id: 'e2e-3', label: 'Prepare 2 portfolio examples of each type', sub: 'Ready to share or describe in interview' },
+                { id: 'e2e-4', label: 'Practice explaining your documentation process', sub: 'How do you go from blank page to published doc?' },
+              ]
+            },
+            {
+              id: 'e2e-types',
+              label: 'Document Types',
+              checklist: [
+                { id: 'e2e-t1', label: 'Playbooks — step-by-step operational runbooks', sub: 'Used by teams to execute repeatable tasks consistently' },
+                { id: 'e2e-t2', label: 'SOPs — prescriptive sequential instructions', sub: 'Fixed order, compliance-oriented, mandatory steps' },
+                { id: 'e2e-t3', label: 'Process Guides — broader decision-based docs', sub: 'Explains "why", offers branching paths, less rigid' },
+                { id: 'e2e-t4', label: 'User Manuals — end-user operational reference', sub: 'Feature-centric, use-case driven, minimal jargon' },
+                { id: 'e2e-t5', label: 'Presentations — leadership communication decks', sub: 'Executive summaries, status updates, transformation roadmaps' },
+              ]
+            },
+            {
+              id: 'e2e-tools',
+              label: 'Tools to Know',
+              checklist: [
+                { id: 'e2e-o1', label: 'Microsoft Word — styles, templates, tracked changes', sub: 'Can create a document template from scratch' },
+                { id: 'e2e-o2', label: 'PowerPoint — master slides, animations, data decks', sub: 'Confident building leadership presentations' },
+                { id: 'e2e-o3', label: 'Confluence / SharePoint Wiki for digital docs', sub: 'Web-first documentation platforms' },
+                { id: 'e2e-o4', label: 'Visio / Miro / Lucidchart for process diagrams', sub: 'Visual workflow documentation' },
+              ]
+            }
+          ],
+          articles: [
+            { icon: '📝', title: 'Write the Docs Guide', src: 'writethedocs.org', url: 'https://www.writethedocs.org/guide/' },
+            { icon: '🎯', title: 'What is Technical Writing?', src: 'techwhirl.com', url: 'https://techwhirl.com/what-is-technical-writing/' },
+            { icon: '📖', title: 'SOP Writing Best Practices', src: 'atlassian.com', url: 'https://www.atlassian.com/work-management/project-management/standard-operating-procedures' },
+          ]
+        },
+        {
+          id: 'transformation',
+          icon: '🔄',
+          title: 'Transformation Frameworks & Automation Workflows',
+          sub: 'SAFe-aligned content, Power Automate docs',
+          color: 'orange',
+          sections: [
+            {
+              id: 'tf-safe',
+              label: 'SAFe Alignment',
+              checklist: [
+                { id: 'tf-1', label: 'Understand SAFe levels: Team → ART → Solution → Portfolio', sub: 'Can explain each level and its documentation artifacts' },
+                { id: 'tf-2', label: 'Know PI Planning documentation artifacts', sub: 'Program board, objectives, risks, dependencies' },
+                { id: 'tf-3', label: 'Familiar with Agile Release Train (ART) events', sub: 'System Demo, Inspect & Adapt, Innovation Sprint' },
+                { id: 'tf-4', label: 'Can document transformation roadmaps', sub: 'AS-IS vs TO-BE, maturity models, change plans' },
+              ]
+            },
+            {
+              id: 'tf-automation',
+              label: 'Automation Documentation',
+              checklist: [
+                { id: 'tf-a1', label: 'Know how to document a Power Automate flow', sub: 'Trigger, conditions, actions, error handling, test cases' },
+                { id: 'tf-a2', label: 'Understand RPA/automation documentation standards', sub: 'Business context, data flows, exception handling' },
+                { id: 'tf-a3', label: 'Prepared to show an automation doc sample', sub: 'Even a simple approval flow documented end-to-end' },
+              ]
+            }
+          ],
+          articles: [
+            { icon: '⚙️', title: 'SAFe Official Guide', src: 'scaledagileframework.com', url: 'https://www.scaledagileframework.com/' },
+            { icon: '🔄', title: 'Power Automate Docs', src: 'learn.microsoft.com', url: 'https://learn.microsoft.com/en-us/power-automate/' },
+          ]
+        },
+        {
+          id: 'ai-writing',
+          icon: '🤖',
+          title: 'AI-Based Writing Tools',
+          sub: 'Copilot, ChatGPT, AI-assisted documentation',
+          color: 'purple',
+          sections: [
+            {
+              id: 'ai-overview',
+              label: 'AI Tool Mastery',
+              checklist: [
+                { id: 'ai-1', label: 'Used Microsoft Copilot for documentation', sub: 'In Word, Teams, PowerPoint — know each context' },
+                { id: 'ai-2', label: 'Prompt engineering basics for technical writing', sub: 'Can craft prompts for SOPs, summaries, outlines' },
+                { id: 'ai-3', label: 'Know AI output validation workflow', sub: 'Never publish AI content without SME validation' },
+                { id: 'ai-4', label: 'Familiar with Grammarly, Hemingway, or similar', sub: 'Style/readability tools for quality documentation' },
+                { id: 'ai-5', label: 'Aware of AI limitations in technical accuracy', sub: 'Hallucinations, stale data, domain-specific errors' },
+              ]
+            }
+          ],
+          articles: [
+            { icon: '🤖', title: 'Microsoft Copilot for M365', src: 'microsoft.com', url: 'https://adoption.microsoft.com/en-us/copilot/' },
+            { icon: '💡', title: 'AI for Technical Writers', src: 'writethedocs.org', url: 'https://www.writethedocs.org/guide/writing/AI/' },
+          ]
+        },
+        {
+          id: 'stakeholder',
+          icon: '👥',
+          title: 'Stakeholder Management',
+          sub: 'SMEs, PMs, Architects — content gathering & validation',
+          color: 'gold',
+          sections: [
+            {
+              id: 'sh-collab',
+              label: 'Collaboration Skills',
+              checklist: [
+                { id: 'sh-1', label: 'Conduct structured SME knowledge interviews', sub: 'Prepare questions, record, draft, validate cycle' },
+                { id: 'sh-2', label: 'Manage review cycles with multiple stakeholders', sub: 'Track feedback, resolve conflicts, final sign-off' },
+                { id: 'sh-3', label: 'Adapt writing style for different audiences', sub: 'Executive vs technical vs end-user perspectives' },
+                { id: 'sh-4', label: 'STAR story: managing conflicting stakeholder needs', sub: 'Have one strong example ready' },
+              ]
+            }
+          ],
+          articles: [
+            { icon: '🎤', title: 'SME Interview Techniques', src: 'techwhirl.com', url: 'https://techwhirl.com/working-subject-matter-experts/' },
+          ]
+        },
+        {
+          id: 'agile-docs',
+          icon: '⚡',
+          title: 'SAFe Agile Ceremonies Support',
+          sub: 'PI Planning, Sprint Reviews, Retrospectives',
+          color: 'teal',
+          sections: [
+            {
+              id: 'ag-ceremonies',
+              label: 'Ceremony Artifacts',
+              checklist: [
+                { id: 'ag-1', label: 'PI Planning — program board, objectives, risks', sub: 'Can build from scratch or from template' },
+                { id: 'ag-2', label: 'Sprint Review — demo scripts, release notes', sub: 'Clear, audience-appropriate sprint summaries' },
+                { id: 'ag-3', label: 'Retrospective — action items, improvement tracker', sub: 'Structured format for recurring retros' },
+                { id: 'ag-4', label: 'System Demo deck — integrated demo narrative', sub: 'Storytelling across multiple team deliveries' },
+              ]
+            }
+          ],
+          articles: [
+            { icon: '📅', title: 'SAFe Events Guide', src: 'scaledagileframework.com', url: 'https://www.scaledagileframework.com/events/' },
+          ]
+        },
+        {
+          id: 'version-control',
+          icon: '🗂️',
+          title: 'Documentation Standards & Version Control',
+          sub: 'Templates, versioning, governance',
+          color: 'purple',
+          sections: [
+            {
+              id: 'vc-standards',
+              label: 'Standards & Governance',
+              checklist: [
+                { id: 'vc-1', label: 'Implement semantic versioning for documents', sub: 'v1.0, v1.1, v2.0 with meaningful change logs' },
+                { id: 'vc-2', label: 'Establish document templates and style guides', sub: 'Consistent look, feel, and structure across org' },
+                { id: 'vc-3', label: 'Git-based Docs-as-Code workflow', sub: 'Branch, PR, review, merge for documentation' },
+                { id: 'vc-4', label: 'SharePoint document library governance', sub: 'Metadata, content types, permissions, retention' },
+              ]
+            }
+          ],
+          articles: [
+            { icon: '📂', title: 'Docs as Code Explained', src: 'writethedocs.org', url: 'https://www.writethedocs.org/guide/docs-as-code/' },
+            { icon: '🔧', title: 'Azure DevOps Wiki', src: 'learn.microsoft.com', url: 'https://learn.microsoft.com/en-us/azure/devops/project/wiki/' },
+          ]
+        },
+      ]
+    },
+    {
+      id: 'looking-for',
+      icon: '🎯',
+      label: "What We're Looking For",
+      type: 'requirements',
+      checklist: [
+        { id: 'req-1', label: '4–8 years technical writing experience', sub: 'Have portfolio examples for each experience level' },
+        { id: 'req-2', label: 'Strong Microsoft Office skills (Word, PPT, Excel)', sub: 'Styles, templates, complex tables, advanced formatting' },
+        { id: 'req-3', label: 'Power BI — dashboards and reports', sub: 'Can create an interactive dashboard from data source' },
+        { id: 'req-4', label: 'Process frameworks & toolkits experience', sub: 'Built or structured a documentation toolkit before' },
+        { id: 'req-5', label: 'SAFe Agile understanding', sub: 'PI Planning, ART, Iterations, Epics/Features/Stories' },
+        { id: 'req-6', label: 'Simplify complex technical concepts', sub: 'Before/after examples in your portfolio ready' },
+        { id: 'req-7', label: 'Communication & stakeholder management', sub: 'STAR story with cross-functional teams prepared' },
+        { id: 'req-8', label: 'Power Automate exposure', sub: 'Basic flow documentation — even a simple example counts' },
+      ],
+      flashcards: [
+        { tag: 'SAFe', q: 'What is a Program Increment (PI)?', a: 'A timebox of 8–12 weeks during which an ART delivers incremental value. Includes 4 development sprints + 1 Innovation & Planning sprint.' },
+        { tag: 'SAFe', q: 'What is an Agile Release Train (ART)?', a: 'A long-lived team of teams (50–125 people) that delivers continuous value aligned to a shared business mission through PI Planning.' },
+        { tag: 'Tools', q: 'What is Power Automate used for?', a: 'Creating automated workflows between apps/services — approvals, notifications, data sync — without writing code. Part of Microsoft Power Platform.' },
+        { tag: 'Writing', q: 'SOP vs Process Guide — key difference?', a: 'SOPs are prescriptive step-by-step with fixed sequences. Process Guides are broader, explain the "why", and offer decision branches.' },
+        { tag: 'Tools', q: 'What is Power BI primarily used for?', a: 'Business intelligence: interactive dashboards and reports from data sources. Used to visualize KPIs, project status, transformation metrics for leadership.' },
+        { tag: 'Azure', q: 'What is Azure DevOps?', a: 'Microsoft platform combining Boards, Repos (Git), Pipelines (CI/CD), Test Plans, Artifacts. Technical writers use it for Docs-as-Code and wiki documentation.' },
+        { tag: 'Writing', q: 'What is Docs-as-Code?', a: 'Writing docs in Markdown/reStructuredText, versioning with Git, reviewing via PRs, publishing via CI/CD — treating documentation like software code.' },
+        { tag: 'SAFe', q: 'Feature vs Story in SAFe?', a: 'Feature: stakeholder service deliverable within a PI. Story: small unit of value deliverable within a single sprint by one team. Features break down into Stories.' },
+      ],
+      mcqs: [
+        {
+          q: 'In SAFe, what is the primary purpose of PI Planning?',
+          opts: ['Assign tasks to developers','Align all teams on a shared vision and plan for the Program Increment','Review completed work from last sprint','Conduct performance reviews'],
+          ans: 1,
+          exp: 'PI Planning is a critical SAFe event where all ART teams align on vision, plan iterations, and identify cross-team dependencies. It occurs at the start of each Program Increment (8–12 weeks).'
+        },
+        {
+          q: 'When documenting a Power Automate workflow, what must always be included?',
+          opts: ['Only the trigger condition','Trigger, conditions, actions, error handling, and test scenarios','Just the final output','The IT admin credentials'],
+          ans: 1,
+          exp: 'Complete automation docs cover: trigger (what starts it), conditions (logic), actions (what happens), error handling (failures), and test scenarios to validate behavior — all critical for maintainability.'
+        },
+        {
+          q: 'Which Microsoft tool is best for leadership documentation dashboards?',
+          opts: ['Microsoft Word','SharePoint Lists','Power BI','Notepad'],
+          ans: 2,
+          exp: 'Power BI provides rich interactive visualizations, drill-downs, and live data connections — far superior to static alternatives for executive-level reporting and documentation health dashboards.'
+        },
+        {
+          q: 'A transformation documentation toolkit primarily serves:',
+          opts: ['Only developers','Multiple audiences — execs, team leads, and end users — with layered content','Only end users','Only the IT department'],
+          ans: 1,
+          exp: 'Transformation documentation must serve multiple audiences simultaneously: executives need business outcomes, project teams need process details, end users need operational instructions.'
+        },
+        {
+          q: 'What is the Docs-as-Code approach?',
+          opts: ['Writing docs inside code comments','Using Git, PRs, CI/CD pipelines to manage docs like software','Converting code to PDFs automatically','Using CLI tools only'],
+          ans: 1,
+          exp: 'Docs-as-Code treats documentation as first-class software: stored in Git, reviewed via PRs, tested/built via CI/CD. Common stack: Markdown + MkDocs/Hugo/Docusaurus.'
+        },
+        {
+          q: 'Best approach for gathering content from an SME?',
+          opts: ['Send a 50-question email survey','Structured interview with prepared Qs, then validate a draft','Ask them to write docs themselves','Copy their Slack messages directly'],
+          ans: 1,
+          exp: 'Structured knowledge capture: prepare questions → interview/record → draft from recording → SME review cycle. Respects SME time while ensuring accuracy.'
+        },
+        {
+          q: 'In SharePoint, what is a Site Collection?',
+          opts: ['A workflow tool','Hierarchical group of sites sharing admin and storage','A Power BI workspace','A Teams channel'],
+          ans: 1,
+          exp: 'Site Collections group related sites under a top-level URL with shared storage, admin settings, and permission boundaries. Documentation hubs are often organized as site collections per team or project.'
+        }
+      ]
+    },
+    {
+      id: 'preferred-qual',
+      icon: '⭐',
+      label: 'Preferred Qualifications',
+      type: 'preferred',
+      topics: [
+        {
+          id: 'cross-func',
+          icon: '🏢',
+          title: 'Cross-Functional Team Experience',
+          sub: 'Product, Transformation, IT collaboration',
+          color: 'teal',
+          sections: [
+            {
+              id: 'cf-prep',
+              label: 'Interview Prep',
+              checklist: [
+                { id: 'cf-1', label: 'STAR story: led documentation across 3+ departments', sub: 'Conflict resolution, priority management, sign-off processes' },
+                { id: 'cf-2', label: 'Example of product + IT + business collaboration', sub: 'Transformation project with multiple stakeholder types' },
+                { id: 'cf-3', label: 'Describe your stakeholder communication cadence', sub: 'Status updates, review cycles, escalation paths' },
+              ]
+            }
+          ],
+          interviewQs: [
+            { q: 'Tell me about documenting for multiple cross-functional teams simultaneously.', diff: 'med', a: '<strong>STAR approach:</strong><ul><li><strong>Situation:</strong> Describe a transformation/migration project spanning product, IT, and business teams</li><li><strong>Task:</strong> Single documentation set serving all three audiences with different needs</li><li><strong>Action:</strong> Created layered documentation — exec summary, team runbook, end-user guide — with a shared glossary and version-controlled master</li><li><strong>Result:</strong> Reduced onboarding time, fewer support requests, stakeholder sign-off in fewer review cycles</li></ul>' }
+          ]
+        },
+        {
+          id: 'product-docs',
+          icon: '📦',
+          title: 'Product Documentation',
+          sub: 'Product lifecycle, release notes, feature specs',
+          color: 'purple',
+          sections: [
+            {
+              id: 'pd-prep',
+              label: 'Interview Prep',
+              checklist: [
+                { id: 'pd-1', label: 'Can write a product feature specification', sub: 'User stories, acceptance criteria, edge cases' },
+                { id: 'pd-2', label: 'Release notes — clear, structured, audience-aware', sub: 'Technical vs customer-facing versions' },
+                { id: 'pd-3', label: 'Product changelog maintenance', sub: 'Versioned, dated, categorized (feat/fix/breaking)' },
+                { id: 'pd-4', label: 'API documentation basics', sub: 'Endpoints, parameters, response examples — OpenAPI' },
+              ]
+            }
+          ],
+          interviewQs: [
+            { q: 'How do you approach documenting a new product feature from scratch?', diff: 'med', a: '<strong>Framework answer:</strong><ul><li>Start with the <strong>product spec / PRD</strong> — understand scope, acceptance criteria</li><li>Interview the <strong>product owner + lead engineer</strong> for implementation details</li><li>Create a <strong>documentation plan</strong>: what docs are needed, audience, format, timeline</li><li>Draft <strong>user stories + feature guide</strong> alongside development (shift-left docs)</li><li>Review with QA team for <strong>accuracy against actual behavior</strong></li><li>Publish to documentation portal with <strong>release version tag</strong></li></ul>' }
+          ]
+        },
+        {
+          id: 'ms-stack',
+          icon: '🔧',
+          title: 'Microsoft Tech Stack',
+          sub: 'Azure, O365, DevOps, SharePoint, Teams',
+          color: 'orange',
+          sections: [
+            {
+              id: 'ms-azure',
+              label: 'Azure & DevOps',
+              checklist: [
+                { id: 'ms-1', label: 'Azure concepts: subscriptions, resource groups', sub: 'Can document Azure architecture at a conceptual level' },
+                { id: 'ms-2', label: 'Azure DevOps: Boards, Repos, Wikis', sub: 'Used for work tracking and documentation repositories' },
+                { id: 'ms-3', label: 'Azure DevOps pipeline documentation', sub: 'CI/CD workflow documentation, deployment runbooks' },
+              ]
+            },
+            {
+              id: 'ms-office',
+              label: 'O365 & SharePoint',
+              checklist: [
+                { id: 'ms-4', label: 'SharePoint: site collections, libraries, content types', sub: 'Documentation hub architecture on SharePoint' },
+                { id: 'ms-5', label: 'Microsoft Teams: channels, wikis, file organization', sub: 'Documentation coordination and review in Teams' },
+                { id: 'ms-6', label: 'OneNote for knowledge management', sub: 'Capturing and organizing team knowledge' },
+                { id: 'ms-7', label: 'Familiar with Microsoft Viva (optional plus)', sub: 'Connections, Topics for enterprise knowledge surfaces' },
+              ]
+            }
+          ],
+          interviewQs: [
+            { q: 'How would you build a documentation hub on SharePoint for a transformation team?', diff: 'hard', a: '<strong>Architecture answer:</strong><ul><li><strong>Information Architecture:</strong> Site collection per workstream → sub-sites per phase → document libraries per artifact type</li><li><strong>Metadata Strategy:</strong> Content types with managed metadata: Status, Owner, Review Date, Version, Audience</li><li><strong>Navigation:</strong> Hub site with global nav, local nav per section, search configuration</li><li><strong>Governance:</strong> Permissions matrix, document lifecycle policy, retention labels</li><li><strong>Integration:</strong> Teams channels connected to SharePoint libraries, Power Automate approval workflows</li></ul>' }
+          ]
+        },
+        {
+          id: 'safe-agile',
+          icon: '🔁',
+          title: 'SAFe + Agile Deep Dive',
+          sub: 'Methodology, roles, ceremonies',
+          color: 'gold',
+          sections: [
+            {
+              id: 'sa-roles',
+              label: 'Key Roles to Know',
+              checklist: [
+                { id: 'sa-1', label: 'RTE — Release Train Engineer (SAFe Scrum Master)', sub: 'Facilitates ART events, removes impediments at program level' },
+                { id: 'sa-2', label: 'PO — Product Owner (team-level backlog)', sub: 'Prioritizes team backlog, accepts stories' },
+                { id: 'sa-3', label: 'PM — Product Manager (program-level features)', sub: 'Defines features, manages program backlog' },
+                { id: 'sa-4', label: 'System Architect / Enterprise Architect', sub: 'Technical guidance and architectural documentation' },
+                { id: 'sa-5', label: 'Business Owner — value accountability', sub: 'Attends PI Planning, validates business objectives' },
+              ]
+            }
+          ],
+          interviewQs: [
+            { q: 'How have you supported SAFe documentation specifically?', diff: 'easy', a: '<strong>Key areas to mention:</strong><ul><li><strong>PI Planning:</strong> Program board content, Feature/Story templates, Risk/Dependency tracking</li><li><strong>ART ceremonies:</strong> System Demo scripts, Inspect & Adapt workshop documentation</li><li><strong>Release:</strong> Release notes aligned to PI objectives, deployment documentation</li><li><strong>Ongoing:</strong> Architecture decision records (ADRs), team working agreements, Definition of Done</li></ul>' }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+/* ════════════════════════════════
+   JD PARSER (for uploaded JDs)
+════════════════════════════════ */
+function parseJDText(rawText, name) {
+  const lines = rawText.split('\n').map(l => l.trim()).filter(Boolean);
+  const sections = [];
+  let currentSection = null;
+  const sectionPatterns = [
+    /what you will do/i,
+    /responsibilities/i,
+    /requirements/i,
+    /what we.?re looking for/i,
+    /preferred qualifications?/i,
+    /qualifications?/i,
+    /about the role/i,
+    /skills/i,
+    /experience/i,
+  ];
+
+  lines.forEach(line => {
+    const isHeading = sectionPatterns.some(p => p.test(line)) && line.length < 80;
+    if (isHeading) {
+      if (currentSection && currentSection.items.length > 0) sections.push(currentSection);
+      currentSection = { title: line.replace(/[*•:]/g, '').trim(), items: [] };
+    } else if (currentSection) {
+      const cleaned = line.replace(/^[•\-\*\d\.\)]+\s*/, '').trim();
+      if (cleaned.length > 8 && cleaned.length < 250) {
+        currentSection.items.push(cleaned);
+      }
+    }
+  });
+  if (currentSection && currentSection.items.length > 0) sections.push(currentSection);
+
+  // Build a JD object
+  const jdSections = sections.map((sec, si) => {
+    const icons = ['📋','🎯','⭐','📊','🔧','💡','🏢','⚙️'];
+    return {
+      id: 'sec-' + si,
+      icon: icons[si % icons.length],
+      label: sec.title,
+      type: 'dynamic',
+      checklist: sec.items.map((item, ii) => ({
+        id: `dyn-${si}-${ii}`,
+        label: item,
+        sub: 'Review and prepare for interview'
+      }))
+    };
+  });
+
+  return {
+    id: 'jd-' + Date.now(),
+    name: name || 'New JD',
+    role: name || 'Role',
+    company: name || 'Company',
+    location: 'Uploaded JD',
+    chips: [{ label: 'Source', value: 'Uploaded' }],
+    sections: [
+      { id: 'overview', icon: '🏠', label: 'Overview', type: 'overview' },
+      ...jdSections
+    ]
+  };
+}
+
+/* ════════════════════════════════
+   INIT
+════════════════════════════════ */
+DB.jds.push(RC_JD);
+DB.activeJD = RC_JD.id;
+
+function init() {
+  renderJDTabs();
+  renderSidebar();
+  renderMain();
+  updateProgress();
+  renderRightPanel();
+}
+
+/* ════════════════════════════════
+   JD TABS
+════════════════════════════════ */
+function renderJDTabs() {
+  const container = document.getElementById('jd-tabs-container');
+  container.innerHTML = DB.jds.map(jd => `
+    <button class="jd-tab ${jd.id === DB.activeJD ? 'active' : ''}"
+            onclick="switchJD('${jd.id}')">
+      ${jd.name}
+      ${DB.jds.length > 1 ? `<span class="jd-tab-close" onclick="removeJD(event,'${jd.id}')">✕</span>` : ''}
+    </button>
+  `).join('');
+}
+
+function switchJD(id) {
+  DB.activeJD = id;
+  renderJDTabs();
+  renderSidebar();
+  renderMain('overview');
+  updateProgress();
+}
+
+function removeJD(e, id) {
+  e.stopPropagation();
+  DB.jds = DB.jds.filter(j => j.id !== id);
+  if (DB.activeJD === id) DB.activeJD = DB.jds[0]?.id;
+  renderJDTabs();
+  renderSidebar();
+  renderMain();
+}
+
+function getActiveJD() {
+  return DB.jds.find(j => j.id === DB.activeJD);
+}
+
+/* ════════════════════════════════
+   SIDEBAR
+════════════════════════════════ */
+let activeSectionId = 'overview';
+
+function renderSidebar() {
+  const jd = getActiveJD();
+  if (!jd) return;
+  const sidebar = document.getElementById('sidebar');
+  sidebar.innerHTML = `
+    <div class="sidebar-section-label">Sections</div>
+    ${jd.sections.map(sec => {
+      const total = getSectionChecklist(sec).length;
+      const done = getSectionChecklist(sec).filter(i => DB.completed[i.id]).length;
+      const isDone = total > 0 && done === total;
+      return `
+        <div class="sidebar-item ${sec.id === activeSectionId ? 'active' : ''}"
+             onclick="navigateTo('${sec.id}')">
+          <span class="sidebar-item-icon">${sec.icon}</span>
+          <span style="flex:1">${sec.label}</span>
+          <div class="sidebar-item-check ${isDone ? 'done' : ''}">${isDone ? '✓' : ''}</div>
+        </div>
+      `;
+    }).join('')}
+  `;
+}
+
+function getSectionChecklist(sec) {
+  if (sec.type === 'requirements') return sec.checklist || [];
+  if (sec.type === 'dynamic') return sec.checklist || [];
+  if (sec.type === 'topics' || sec.type === 'preferred') {
+    return (sec.topics || []).flatMap(t => (t.sections || []).flatMap(s => s.checklist || []));
+  }
+  return [];
+}
+
+function navigateTo(sectionId) {
+  activeSectionId = sectionId;
+  renderSidebar();
+  renderMain(sectionId);
+  window.scrollTo(0, 0);
+}
+
+/* ════════════════════════════════
+   MAIN CONTENT RENDERER
+════════════════════════════════ */
+function renderMain(sectionId) {
+  activeSectionId = sectionId || activeSectionId;
+  const jd = getActiveJD();
+  if (!jd) return;
+  const section = jd.sections.find(s => s.id === activeSectionId) || jd.sections[0];
+  activeSectionId = section.id;
+
+  const main = document.getElementById('main');
+
+  if (section.type === 'overview') {
+    main.innerHTML = renderOverviewPage(jd);
+  } else if (section.type === 'topics') {
+    main.innerHTML = renderTopicsPage(section, jd);
+  } else if (section.type === 'requirements') {
+    main.innerHTML = renderRequirementsPage(section, jd);
+  } else if (section.type === 'preferred') {
+    main.innerHTML = renderPreferredPage(section, jd);
+  } else if (section.type === 'dynamic') {
+    main.innerHTML = renderDynamicPage(section, jd);
+  }
+
+  // Re-attach checklist listeners
+  attachChecklistListeners();
+  // Re-init MCQ if present
+  if (window.mcqState) resetMCQDisplay();
+}
+
+/* ════════════════════════════════
+   OVERVIEW PAGE
+════════════════════════════════ */
+function renderOverviewPage(jd) {
+  const allItems = jd.sections.flatMap(s => getSectionChecklist(s));
+  const total = allItems.length;
+  const done = allItems.filter(i => DB.completed[i.id]).length;
+  const pct = total > 0 ? Math.round(done / total * 100) : 0;
+  const circ = 201;
+  const offset = circ - (pct / 100 * circ);
+
+  return `
+    <div class="page-hero">
+      <div class="hero-eyebrow">${jd.company} · Interview Prep</div>
+      <div class="hero-title">${jd.role}</div>
+      <div class="hero-sub">${jd.location}</div>
+      <div class="hero-chips">
+        ${(jd.chips || []).map(c => `<div class="hero-chip">${c.label} <strong>${c.value}</strong></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="overview-progress-bar">
+      <div class="opb-ring-wrap">
+        <svg class="opb-ring" viewBox="0 0 80 80">
+          <circle class="ring-bg" cx="40" cy="40" r="32"/>
+          <circle class="ring-fill" cx="40" cy="40" r="32"
+            stroke-dasharray="${circ}" stroke-dashoffset="${offset}"
+            style="stroke:var(--accent);stroke-linecap:round;fill:none;stroke-width:6;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 0.5s"/>
+          <text class="opb-label" x="40" y="44" text-anchor="middle">${pct}%</text>
+          <text class="opb-sublabel" x="40" y="57" text-anchor="middle">Ready</text>
+        </svg>
+      </div>
+      <div class="opb-stats">
+        ${jd.sections.filter(s => s.id !== 'overview').map(sec => {
+          const items = getSectionChecklist(sec);
+          const d = items.filter(i => DB.completed[i.id]).length;
+          return `<div class="opb-stat">
+            <div class="opb-stat-val">${d}<span>/${items.length}</span></div>
+            <div class="opb-stat-lbl">${sec.label.slice(0,12)}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="sec-title">Jump to Section</div>
+    <div class="sec-divider"></div>
+    <div class="topic-grid">
+      ${jd.sections.filter(s => s.id !== 'overview').map(sec => {
+        const items = getSectionChecklist(sec);
+        const d = items.filter(i => DB.completed[i.id]).length;
+        const isDone = items.length > 0 && d === items.length;
+        return `
+          <div class="topic-card ${isDone ? 'done' : ''}" onclick="navigateTo('${sec.id}')">
+            ${isDone ? '<div class="tc-done-badge">✓ Done</div>' : ''}
+            <div class="tc-icon">${sec.icon}</div>
+            <div class="tc-title">${sec.label}</div>
+            <div class="tc-sub">${d}/${items.length} items checked</div>
+            <div class="tc-arrow">Open section →</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+/* ════════════════════════════════
+   TOPICS PAGE (What You Will Do)
+════════════════════════════════ */
+function renderTopicsPage(section, jd) {
+  return `
+    <div class="page-hero">
+      <div class="hero-eyebrow">${jd.company}</div>
+      <div class="hero-title">${section.label}</div>
+      <div class="hero-sub">Click any topic to open a detailed prep page with checklists and resources</div>
+    </div>
+
+    <div class="sec-title">Topics</div>
+    <div class="sec-divider"></div>
+    <div class="topic-grid">
+      ${(section.topics || []).map(topic => {
+        const allCl = (topic.sections || []).flatMap(s => s.checklist || []);
+        const done = allCl.filter(i => DB.completed[i.id]).length;
+        const isDone = allCl.length > 0 && done === allCl.length;
+        return `
+          <div class="topic-card ${isDone ? 'done' : ''}"
+               onclick="openDetail('${section.id}','${topic.id}')">
+            ${isDone ? '<div class="tc-done-badge">✓ Done</div>' : ''}
+            <div class="tc-icon">${topic.icon}</div>
+            <div class="tc-title">${topic.title}</div>
+            <div class="tc-sub">${topic.sub}</div>
+            <div style="margin-top:0.35rem;font-size:0.7rem;color:var(--text3);">${done}/${allCl.length} items checked</div>
+            <div class="tc-arrow">Open detail page →</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+/* ════════════════════════════════
+   REQUIREMENTS PAGE
+════════════════════════════════ */
+let mcqState = { current: 0, score: 0, answered: {} };
+
+function renderRequirementsPage(section, jd) {
+  window.currentMCQs = section.mcqs || [];
+  window.currentMCQSection = section;
+  resetMCQState();
+
+  return `
+    <div class="page-hero">
+      <div class="hero-eyebrow">${jd.company}</div>
+      <div class="hero-title">${section.label}</div>
+      <div class="hero-sub">Skill bars, flashcards, MCQ practice, and a checklist — all in one place</div>
+    </div>
+
+    <!-- Skill Bars -->
+    <div class="sec-title">Skills Landscape</div>
+    <div class="sec-divider"></div>
+    <div class="skill-grid">
+      ${[
+        {name:'Technical Writing',pct:90,tags:['Core','8+ yrs']},
+        {name:'SAFe / Agile',pct:80,tags:['Methodology','PI Planning']},
+        {name:'Microsoft Office',pct:85,tags:['Word','PPT','Excel']},
+        {name:'Power BI',pct:70,tags:['Dashboards','Reports']},
+        {name:'Stakeholder Mgmt',pct:75,tags:['Communication','SMEs']},
+        {name:'Power Automate',pct:60,tags:['Plus','Flows']},
+      ].map(s => `
+        <div class="skill-card">
+          <div class="skill-row">
+            <span class="skill-name">${s.name}</span>
+            <span class="skill-pct">${s.pct}%</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" style="width:${s.pct}%"></div></div>
+          <div class="skill-tags">${s.tags.map(t => `<span class="skill-tag">${t}</span>`).join('')}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- Flashcards -->
+    <div class="sec-title">Key Concept Flashcards</div>
+    <div class="sec-sub">Click to flip</div>
+    <div class="fc-grid">
+      ${(section.flashcards || []).map((fc, i) => `
+        <div class="fc-card" id="fc-${i}" onclick="flipFC(${i})">
+          <div class="fc-inner">
+            <div class="fc-front">
+              <div class="fc-tag">${fc.tag}</div>
+              <div class="fc-q">${fc.q}</div>
+              <div class="fc-hint">Click to reveal</div>
+            </div>
+            <div class="fc-back">
+              <div class="fc-tag">Answer</div>
+              <div class="fc-a">${fc.a}</div>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- MCQ -->
+    <div class="sec-title">MCQ Self-Assessment</div>
+    <div class="sec-divider"></div>
+    <div class="mcq-wrap">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+        <div class="mcq-score" id="mcq-score-label">Score: 0/${(section.mcqs||[]).length}</div>
+        <button class="btn btn-ghost btn-sm" onclick="resetMCQState();renderMCQCard()">↺ Restart</button>
+      </div>
+      <div class="mcq-progress"><div class="mcq-progress-fill" id="mcq-pf" style="width:0%"></div></div>
+      <div id="mcq-card-wrap"></div>
+    </div>
+
+    <!-- Requirements Checklist -->
+    <div class="sec-title">Requirements Checklist</div>
+    <div class="sec-sub">Track what you've reviewed and prepared</div>
+    <div class="checklist-block">
+      ${(section.checklist || []).map(item => renderChecklistItem(item, section.label)).join('')}
+    </div>
+
+    <!-- Resources -->
+    <div class="sec-title">Learning Resources</div>
+    <div class="sec-divider"></div>
+    <table class="res-table">
+      <thead><tr><th>Resource</th><th>Topic</th><th>Cost</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://www.scaledagile.com/training/" target="_blank">Leading SAFe Certification</a></td><td>SAFe Agile</td><td><span class="res-badge rb-paid">Paid</span></td></tr>
+        <tr><td><a href="https://learn.microsoft.com/en-us/training/powerbi/" target="_blank">Power BI Learning Path</a></td><td>Power BI</td><td><span class="res-badge rb-ms">MS Free</span></td></tr>
+        <tr><td><a href="https://learn.microsoft.com/en-us/training/paths/automate-process-power-automate/" target="_blank">Power Automate Fundamentals</a></td><td>Power Automate</td><td><span class="res-badge rb-ms">MS Free</span></td></tr>
+        <tr><td><a href="https://developers.google.com/tech-writing" target="_blank">Google Technical Writing</a></td><td>Writing Fundamentals</td><td><span class="res-badge rb-free">Free</span></td></tr>
+        <tr><td><a href="https://www.coursera.org/learn/technical-writing" target="_blank">Tech Writing – Coursera</a></td><td>Technical Writing</td><td><span class="res-badge rb-free">Free Audit</span></td></tr>
+      </tbody>
+    </table>
+  `;
+  // Defer MCQ render
+  setTimeout(() => renderMCQCard(), 50);
+}
+
+/* ════════════════════════════════
+   PREFERRED QUALIFICATIONS PAGE
+════════════════════════════════ */
+function renderPreferredPage(section, jd) {
+  return `
+    <div class="page-hero">
+      <div class="hero-eyebrow">${jd.company}</div>
+      <div class="hero-title">${section.label}</div>
+      <div class="hero-sub">Click any qualification area for detailed interview prep</div>
+    </div>
+
+    <div class="sec-title">Qualification Areas</div>
+    <div class="sec-divider"></div>
+    <div class="topic-grid">
+      ${(section.topics || []).map(topic => {
+        const allCl = (topic.sections || []).flatMap(s => s.checklist || []);
+        const done = allCl.filter(i => DB.completed[i.id]).length;
+        const isDone = allCl.length > 0 && done === allCl.length;
+        return `
+          <div class="topic-card ${isDone ? 'done' : ''}"
+               onclick="openDetail('${section.id}','${topic.id}')">
+            ${isDone ? '<div class="tc-done-badge">✓ Done</div>' : ''}
+            <div class="tc-icon">${topic.icon}</div>
+            <div class="tc-title">${topic.title}</div>
+            <div class="tc-sub">${topic.sub}</div>
+            <div style="margin-top:0.35rem;font-size:0.7rem;color:var(--text3);">${done}/${allCl.length} checked</div>
+            <div class="tc-arrow">Open interview prep →</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+/* ════════════════════════════════
+   DYNAMIC PAGE (uploaded JD sections)
+════════════════════════════════ */
+function renderDynamicPage(section, jd) {
+  return `
+    <div class="page-hero">
+      <div class="hero-eyebrow">${jd.company}</div>
+      <div class="hero-title">${section.label}</div>
+      <div class="hero-sub">Parsed from your uploaded JD. Click items to mark as reviewed.</div>
+    </div>
+
+    <div class="sec-title">Checklist</div>
+    <div class="sec-divider"></div>
+    <div class="checklist-block">
+      ${(section.checklist || []).map(item => renderChecklistItem(item, section.label)).join('')}
+    </div>
+
+    <!-- Upload additional content -->
+    <div class="sec-title" style="margin-top:1.5rem;">Enrich This Section</div>
+    <div class="sec-sub">Upload a file to add more checklist items to this section</div>
+    ${renderUploadZone(section.id, jd.id)}
+  `;
+}
+
+/* ════════════════════════════════
+   CHECKLIST ITEM RENDERER
+════════════════════════════════ */
+function renderChecklistItem(item, sectionLabel) {
+  const isDone = !!DB.completed[item.id];
+  return `
+    <div class="cl-item ${isDone ? 'checked' : ''}"
+         data-id="${item.id}"
+         data-label="${escapeAttr(item.label)}"
+         data-section="${escapeAttr(sectionLabel || '')}"
+         onclick="toggleChecklist(this)">
+      <div class="cl-box"><span class="cl-checkmark">✓</span></div>
+      <div>
+        <div class="cl-label">${item.label}</div>
+        ${item.sub ? `<div class="cl-sub">${item.sub}</div>` : ''}
+      </div>
+      <div class="cl-send-badge">→ Panel</div>
+    </div>
+  `;
+}
+
+function escapeAttr(str) {
+  return (str || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function attachChecklistListeners() {
+  // Already handled via inline onclick
+}
+
+function toggleChecklist(el) {
+  const id = el.dataset.id;
+  const label = el.dataset.label;
+  const section = el.dataset.section;
+
+  if (DB.completed[id]) {
+    delete DB.completed[id];
+    el.classList.remove('checked');
+    removeFromPanel(id);
+  } else {
+    DB.completed[id] = { label, section, ts: Date.now() };
+    el.classList.add('checked');
+    addToPanel(id, label, section);
+  }
+  DB.save();
+  updateProgress();
+  renderSidebar();
+  showToast(DB.completed[id] ? '✓ Moved to completed panel' : '↩ Removed from completed');
+}
+
+/* ════════════════════════════════
+   RIGHT PANEL
+════════════════════════════════ */
+function addToPanel(id, label, section) {
+  const list = document.getElementById('rp-list');
+  const empty = list.querySelector('.rp-empty');
+  if (empty) list.innerHTML = '';
+
+  const el = document.createElement('div');
+  el.className = 'completed-item';
+  el.id = 'rp-' + id;
+  el.innerHTML = `
+    <div class="completed-item-icon">✓</div>
+    <div class="completed-item-body">
+      <div class="completed-item-label">${label}</div>
+      <div class="completed-item-section">${section}</div>
+    </div>
+    <button class="completed-item-undo" onclick="undoComplete('${id}')" title="Undo">↩</button>
+  `;
+  list.prepend(el);
+  updateRPCount();
+}
+
+function removeFromPanel(id) {
+  const el = document.getElementById('rp-' + id);
+  if (el) el.remove();
+  const list = document.getElementById('rp-list');
+  if (!list.children.length) {
+    list.innerHTML = '<div class="rp-empty"><div class="rp-empty-icon">📋</div>Check off items to move them here</div>';
+  }
+  updateRPCount();
+}
+
+function undoComplete(id) {
+  delete DB.completed[id];
+  DB.save();
+  removeFromPanel(id);
+  // Uncheck in DOM if visible
+  const el = document.querySelector(`[data-id="${id}"]`);
+  if (el) el.classList.remove('checked');
+  updateProgress();
+  renderSidebar();
+  showToast('↩ Item restored');
+}
+
+function clearCompleted() {
+  if (!confirm('Clear all completed items?')) return;
+  DB.completed = {};
+  DB.save();
+  renderRightPanel();
+  document.querySelectorAll('.cl-item.checked').forEach(el => el.classList.remove('checked'));
+  updateProgress();
+  renderSidebar();
+  renderMain(activeSectionId);
+}
+
+function renderRightPanel() {
+  const list = document.getElementById('rp-list');
+  const entries = Object.entries(DB.completed);
+  if (!entries.length) {
+    list.innerHTML = '<div class="rp-empty"><div class="rp-empty-icon">📋</div>Check off items to move them here</div>';
+  } else {
+    list.innerHTML = entries.map(([id, val]) => `
+      <div class="completed-item" id="rp-${id}">
+        <div class="completed-item-icon">✓</div>
+        <div class="completed-item-body">
+          <div class="completed-item-label">${val.label}</div>
+          <div class="completed-item-section">${val.section}</div>
+        </div>
+        <button class="completed-item-undo" onclick="undoComplete('${id}')" title="Undo">↩</button>
+      </div>
+    `).reverse().join('');
+  }
+  updateRPCount();
+}
+
+function updateRPCount() {
+  const count = Object.keys(DB.completed).length;
+  document.getElementById('rp-count').textContent = count;
+  document.getElementById('rp-clear-btn').style.display = count > 0 ? 'block' : 'none';
+}
+
+/* ════════════════════════════════
+   PROGRESS
+════════════════════════════════ */
+function updateProgress() {
+  const jd = getActiveJD();
+  if (!jd) return;
+  const allItems = jd.sections.flatMap(s => getSectionChecklist(s));
+  const total = allItems.length;
+  const done = allItems.filter(i => DB.completed[i.id]).length;
+  const pct = total > 0 ? Math.round(done / total * 100) : 0;
+  document.getElementById('tb-progress-chip').textContent = `${pct}% Ready`;
+  updateRPCount();
+}
+
+/* ════════════════════════════════
+   DETAIL OVERLAY
+════════════════════════════════ */
+function openDetail(sectionId, topicId) {
+  const jd = getActiveJD();
+  const section = jd.sections.find(s => s.id === sectionId);
+  const topic = (section?.topics || []).find(t => t.id === topicId);
+  if (!topic) return;
+
+  window.currentDetail = { section, topic };
+  window.currentDetailSubSection = topic.sections?.[0]?.id;
+
+  document.getElementById('detail-sidebar-title').textContent = topic.title;
+  document.getElementById('detail-sidebar-subtitle').textContent = topic.sub;
+
+  renderDetailNav(topic);
+  renderDetailContent(topic, window.currentDetailSubSection);
+
+  document.getElementById('detail-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  renderMain(activeSectionId); // refresh to update topic card progress
+}
+
+function renderDetailNav(topic) {
+  const navContainer = document.getElementById('detail-nav-items');
+  navContainer.innerHTML = (topic.sections || []).map(sec => {
+    const done = (sec.checklist || []).filter(i => DB.completed[i.id]).length;
+    const total = (sec.checklist || []).length;
+    const isDone = total > 0 && done === total;
+    return `
+      <div class="detail-nav-item ${sec.id === window.currentDetailSubSection ? 'active' : ''}"
+           onclick="switchDetailSection('${sec.id}')">
+        <span style="flex:1">${sec.label}</span>
+        <div class="detail-nav-item-check ${isDone ? 'done' : ''}">${isDone ? '✓' : ''}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Add upload section
+  navContainer.innerHTML += `
+    <div style="margin-top:1rem;padding:0 1.25rem;">
+      <div class="sidebar-section-label">Enrich Content</div>
+      <div class="detail-nav-item" onclick="switchDetailSection('upload-section')">
+        <span>📎 Upload File</span>
+      </div>
+    </div>
+  `;
+}
+
+function switchDetailSection(secId) {
+  window.currentDetailSubSection = secId;
+  renderDetailNav(window.currentDetail.topic);
+  renderDetailContent(window.currentDetail.topic, secId);
+}
+
+function renderDetailContent(topic, secId) {
+  const main = document.getElementById('detail-main');
+
+  if (secId === 'upload-section') {
+    main.innerHTML = renderDetailUploadPage(topic);
+    return;
+  }
+
+  const sec = (topic.sections || []).find(s => s.id === secId);
+  if (!sec) return;
+
+  const interviewQs = topic.interviewQs || [];
+
+  main.innerHTML = `
+    <div style="font-family:'Fraunces',serif;font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:0.5rem;">${topic.icon} ${topic.title}</div>
+    <h2 style="font-family:'Fraunces',serif;font-size:1.5rem;font-weight:900;color:var(--text);margin-bottom:0.25rem;">${sec.label}</h2>
+    <p style="font-size:0.78rem;color:var(--text2);margin-bottom:1.75rem;">${sec.checklist?.length || 0} preparation items</p>
+
+    <div class="sec-title">Preparation Checklist</div>
+    <div class="sec-divider"></div>
+    <div class="checklist-block">
+      ${(sec.checklist || []).map(item => renderChecklistItem(item, topic.title)).join('')}
+    </div>
+
+    ${topic.articles?.length ? `
+      <div class="sec-title" style="margin-top:1.5rem;">Reference Articles</div>
+      <div class="sec-divider"></div>
+      ${topic.articles.map(a => `
+        <a class="article-link" href="${a.url}" target="_blank">
+          <div class="al-icon">${a.icon}</div>
+          <div>
+            <div class="al-title">${a.title}</div>
+            <div class="al-src">${a.src} ↗</div>
+          </div>
+        </a>
+      `).join('')}
+    ` : ''}
+
+    ${interviewQs.length ? `
+      <div class="sec-title" style="margin-top:1.5rem;">Interview Questions</div>
+      <div class="sec-divider"></div>
+      ${interviewQs.map((q, i) => `
+        <div class="accordion-item" id="iq-${i}">
+          <div class="accordion-header" onclick="document.getElementById('iq-${i}').classList.toggle('open')">
+            <span class="accordion-diff diff-${q.diff}">${q.diff.toUpperCase()}</span>
+            <span style="flex:1">${q.q}</span>
+            <span class="accordion-chevron">▾</span>
+          </div>
+          <div class="accordion-body">${q.a}</div>
+        </div>
+      `).join('')}
+    ` : ''}
+
+    ${renderUploadZone(sec.id + '-upload', 'detail')}
+  `;
+}
+
+/* ════════════════════════════════
+   UPLOAD ZONE RENDERER
+════════════════════════════════ */
+function renderUploadZone(zoneId, context) {
+  return `
+    <div class="sec-title" style="margin-top:1.5rem;">Upload Supporting Content</div>
+    <div class="sec-sub">Upload a file to extract checklist items for this section</div>
+    <div class="upload-zone" id="uz-${zoneId}"
+         ondragover="event.preventDefault();this.classList.add('dragover')"
+         ondragleave="this.classList.remove('dragover')"
+         ondrop="handleFileDrop(event,'${zoneId}','${context}')"
+         onclick="document.getElementById('ufi-${zoneId}').click()">
+      <input type="file" id="ufi-${zoneId}" accept=".txt,.pdf,.md" onchange="handleFileSelect(event,'${zoneId}','${context}')"/>
+      <div class="upload-zone-icon">📎</div>
+      <div class="upload-zone-title">Drop file here or click to upload</div>
+      <div class="upload-zone-sub">TXT, MD supported for instant parsing • PDF for name extraction</div>
+    </div>
+    <div id="upload-result-${zoneId}"></div>
+  `;
+}
+
+function renderDetailUploadPage(topic) {
+  return `
+    <div style="font-family:'Fraunces',serif;font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:0.5rem;">${topic.icon} ${topic.title}</div>
+    <h2 style="font-family:'Fraunces',serif;font-size:1.5rem;font-weight:900;color:var(--text);margin-bottom:0.25rem;">Enrich with Your Files</h2>
+    <p style="font-size:0.78rem;color:var(--text2);margin-bottom:1.75rem;">Upload reference materials, notes, or JD excerpts to auto-generate checklist items</p>
+
+    ${renderUploadZone('detail-enrich-' + topic.id, topic.id)}
+  `;
+}
+
+/* ════════════════════════════════
+   FILE HANDLING
+════════════════════════════════ */
+function handleFileDrop(e, zoneId, context) {
+  e.preventDefault();
+  document.getElementById('uz-' + zoneId)?.classList.remove('dragover');
+  const file = e.dataTransfer?.files?.[0];
+  if (file) processFile(file, zoneId, context);
+}
+
+function handleFileSelect(e, zoneId, context) {
+  const file = e.target.files?.[0];
+  if (file) processFile(file, zoneId, context);
+}
+
+function processFile(file, zoneId, context) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const items = extractChecklistFromText(text, file.name);
+    renderUploadResult(zoneId, file.name, items, context);
+  };
+  // Read as text (works for txt, md; will get garbled for PDF but extracts some text)
+  reader.readAsText(file);
+}
+
+function extractChecklistFromText(text, filename) {
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const items = [];
+
+  lines.forEach(line => {
+    // Strip bullet points, numbers, markdown headers
+    const cleaned = line
+      .replace(/^#+\s*/, '')
+      .replace(/^[•\-\*\d\.\)]+\s*/, '')
+      .replace(/\*\*/g, '')
+      .trim();
+
+    if (cleaned.length >= 10 && cleaned.length <= 300) {
+      // Filter out lines that look like headers (all caps, very short)
+      const isLikelyBullet = /[a-z]/.test(cleaned) || cleaned.length > 30;
+      if (isLikelyBullet) {
+        items.push(cleaned);
+      }
+    }
+  });
+
+  // Deduplicate
+  return [...new Set(items)].slice(0, 25); // max 25 items
+}
+
+function renderUploadResult(zoneId, filename, items, context) {
+  const resultEl = document.getElementById('upload-result-' + zoneId);
+  if (!resultEl) return;
+
+  if (!items.length) {
+    resultEl.innerHTML = `<div class="upload-result"><div class="upload-result-title">⚠️ No items extracted from ${filename}</div><p style="font-size:0.76rem;color:var(--text2);">Try a plain text or markdown file with bullet points.</p></div>`;
+    return;
+  }
+
+  const tempItems = items.map((item, i) => ({
+    id: `uploaded-${zoneId}-${i}-${Date.now()}`,
+    label: item,
+    sub: `From: ${filename}`,
+    _temp: true
+  }));
+
+  resultEl.innerHTML = `
+    <div class="upload-result">
+      <div class="upload-result-title">✓ Extracted ${items.length} items from "${filename}"</div>
+      <p style="font-size:0.74rem;color:var(--text2);margin-bottom:0.85rem;">Click items to add to your completed panel, or add all at once.</p>
+      <div class="checklist-block">
+        ${tempItems.map(item => renderChecklistItem(item, `Uploaded: ${filename}`)).join('')}
+      </div>
+      <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+        <button class="btn btn-primary btn-sm" onclick="checkAllUploadedItems('${zoneId}','${filename}')">Check All →</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('upload-result-${zoneId}').innerHTML=''">Clear</button>
+      </div>
+    </div>
+  `;
+}
+
+function checkAllUploadedItems(zoneId, filename) {
+  const resultEl = document.getElementById('upload-result-' + zoneId);
+  if (!resultEl) return;
+  resultEl.querySelectorAll('.cl-item:not(.checked)').forEach(el => toggleChecklist(el));
+}
+
+/* ════════════════════════════════
+   ADD JD MODAL
+════════════════════════════════ */
+function openUploadModal() {
+  document.getElementById('upload-modal').style.display = 'flex';
+}
+
+function closeUploadModal() {
+  document.getElementById('upload-modal').style.display = 'none';
+  document.getElementById('modal-jd-text').value = '';
+  document.getElementById('modal-jd-name').value = '';
+}
+
+function handleModalFileUpload(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  if (!document.getElementById('modal-jd-name').value) {
+    document.getElementById('modal-jd-name').value = file.name.replace(/\.(pdf|txt|md)$/i, '');
+  }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('modal-jd-text').value = ev.target.result;
+  };
+  reader.readAsText(file);
+}
+
+function processAndAddJD() {
+  const text = document.getElementById('modal-jd-text').value.trim();
+  const name = document.getElementById('modal-jd-name').value.trim() || 'New JD';
+
+  if (!text) {
+    showToast('⚠️ Please paste or upload a JD first');
+    return;
+  }
+
+  const newJD = parseJDText(text, name);
+  DB.jds.push(newJD);
+  DB.activeJD = newJD.id;
+
+  closeUploadModal();
+  renderJDTabs();
+  renderSidebar();
+  renderMain('overview');
+  updateProgress();
+  showToast(`✓ "${name}" added — ${newJD.sections.length - 1} sections parsed`);
+}
+
+/* ════════════════════════════════
+   FLASHCARDS
+════════════════════════════════ */
+function flipFC(i) {
+  document.getElementById('fc-' + i)?.classList.toggle('flipped');
+}
+
+/* ════════════════════════════════
+   MCQ
+════════════════════════════════ */
+function resetMCQState() {
+  window.mcqState = { current: 0, score: 0, answered: {} };
+}
+
+function renderMCQCard() {
+  const mcqs = window.currentMCQs || [];
+  if (!mcqs.length) return;
+  const s = window.mcqState;
+  const q = mcqs[s.current];
+
+  const pct = (s.current / mcqs.length) * 100;
+  const pfEl = document.getElementById('mcq-pf');
+  if (pfEl) pfEl.style.width = pct + '%';
+
+  const scoreEl = document.getElementById('mcq-score-label');
+  if (scoreEl) scoreEl.textContent = `Score: ${s.score}/${mcqs.length}`;
+
+  const wrap = document.getElementById('mcq-card-wrap');
+  if (!wrap) return;
+
+  wrap.innerHTML = `
+    <div class="mcq-card">
+      <div class="mcq-counter">Question ${s.current + 1} of ${mcqs.length}</div>
+      <div class="mcq-q">${q.q}</div>
+      <div class="mcq-opts">
+        ${q.opts.map((o, i) => `
+          <div class="mcq-opt ${s.answered[s.current] !== undefined ? (i === q.ans ? 'correct' : i === s.answered[s.current] ? 'wrong' : 'disabled') : ''}"
+               id="mopt-${i}"
+               onclick="selectMCQ(${i})">
+            <div class="mcq-opt-l">${String.fromCharCode(65+i)}</div>
+            ${o}
+          </div>
+        `).join('')}
+      </div>
+      <div class="mcq-exp" id="mcq-exp-txt" style="${s.answered[s.current] !== undefined ? 'display:block' : 'display:none'}">${q.exp}</div>
+    </div>
+    <div class="mcq-footer">
+      <div></div>
+      ${s.answered[s.current] !== undefined && s.current < mcqs.length - 1
+        ? `<button class="btn btn-primary btn-sm" onclick="nextMCQ()">Next →</button>`
+        : s.answered[s.current] !== undefined && s.current === mcqs.length - 1
+        ? `<button class="btn btn-ghost btn-sm" onclick="resetMCQState();renderMCQCard()">↺ Restart</button>`
+        : ''}
+    </div>
+  `;
+}
+
+function selectMCQ(i) {
+  const s = window.mcqState;
+  const mcqs = window.currentMCQs || [];
+  if (s.answered[s.current] !== undefined) return;
+  s.answered[s.current] = i;
+  if (i === mcqs[s.current].ans) s.score++;
+  renderMCQCard();
+}
+
+function nextMCQ() {
+  window.mcqState.current++;
+  renderMCQCard();
+}
+
+function resetMCQDisplay() {
+  resetMCQState();
+  renderMCQCard();
+}
+
+/* ════════════════════════════════
+   TOAST
+════════════════════════════════ */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ════════════════════════════════
+   RUN
+════════════════════════════════ */
+init();
+
+// Render MCQ after DOM is ready (deferred)
+setTimeout(() => {
+  if (activeSectionId === 'looking-for') renderMCQCard();
+}, 100);
+</script>
+</body>
+</html>
