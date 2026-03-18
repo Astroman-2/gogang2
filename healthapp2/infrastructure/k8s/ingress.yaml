@@ -1,0 +1,68 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: healthapp-ingress
+  labels:
+    app: healthapp
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - healthapp.example.com
+    secretName: healthapp-tls
+  rules:
+  - host: healthapp.example.com
+    http:
+      paths:
+      # API routes to backend
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: healthapp-backend
+            port:
+              number: 8000
+      # Frontend routes
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: healthapp-frontend
+            port:
+              number: 80
+---
+# Alternative Ingress for separate API subdomain
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: healthapp-api-ingress
+  labels:
+    app: healthapp
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - api.healthapp.example.com
+    secretName: healthapp-api-tls
+  rules:
+  - host: api.healthapp.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: healthapp-backend
+            port:
+              number: 8000
