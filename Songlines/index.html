@@ -3,106 +3,1344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kandey Uttey | Sufi Experience</title>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <title>The Eternal Chronicles - A Song Of Pyre and K-lives</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Tangerine:wght@400;700&family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: #0f0c29;
-            background: linear-gradient(to bottom, #24243e, #302b63, #0f0c29);
-            color: #d4af37;
-            font-family: 'Cinzel', serif;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --parchment: #f5f1e8;
+            --dark-ink: #2c1810;
+            --gold: #d4af37;
+            --bronze: #8b6914;
+            --rust: #a0522d;
+            --deep-brown: #3e2723;
+            --accent-cream: #f9f6f0;
+            --shadow-dark: #1a0e0a;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a1410 0%, #2c1810 100%);
+            color: var(--dark-ink);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            background: var(--parchment);
+            position: relative;
+        }
+
+        /* SIDEBAR NAVIGATION */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--deep-brown) 0%, #2c1810 100%);
+            padding: 40px 20px;
+            overflow-y: auto;
+            border-right: 3px solid var(--gold);
+            box-shadow: inset -10px 0 20px rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 3px;
+        }
+
+        .app-title {
+            font-family: 'Tangerine', cursive;
+            font-size: 42px;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            letter-spacing: 2px;
+        }
+
+        .app-subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 10px;
+            color: var(--accent-cream);
+            text-align: center;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+            opacity: 0.8;
+        }
+
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-label {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .nav-button {
+            display: block;
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            color: var(--accent-cream);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-button::before {
+            content: '';
+            position: absolute;
+            left: -100%;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gold);
+            opacity: 0.1;
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .nav-button:hover::before {
+            left: 0;
+        }
+
+        .nav-button.active {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: var(--gold);
+            color: var(--gold);
+            box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.1);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
+            background: linear-gradient(135deg, var(--parchment) 0%, #f0ebe2 100%);
+            position: relative;
+            overflow: hidden;
         }
-        /* Mist Animation Effect */
-        .mist {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
-            opacity: 0.1;
+
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(212,175,55,0.03) 2px, rgba(212,175,55,0.03) 4px),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(212,175,55,0.03) 2px, rgba(212,175,55,0.03) 4px);
             pointer-events: none;
             z-index: 1;
         }
-        .main-card {
+
+        .content-frame {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
             z-index: 2;
-            margin: 40px 0;
-            width: 90%;
-            max-width: 800px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid #d4af37;
+            overflow: hidden;
             padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            height: 100%;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* DASHBOARD TAB */
+        .dashboard {
+            gap: 30px;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .video-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 4px;
+            border: 2px solid rgba(212,175,55,0.3);
+        }
+
+        .video-player {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 2px;
+            border: 1px solid var(--gold);
+            overflow: hidden;
+        }
+
+        .video-player video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .audio-upload {
+            padding: 12px;
+            background: rgba(212,175,55,0.1);
+            border: 1px dashed var(--gold);
+            border-radius: 2px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .audio-upload:hover {
+            background: rgba(212,175,55,0.2);
+        }
+
+        .audio-upload input {
+            display: none;
+        }
+
+        .scroll-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow: hidden;
+        }
+
+        .scroll-container {
+            background: linear-gradient(135deg, rgba(45,28,14,0.9) 0%, rgba(60,39,23,0.95) 100%);
+            border: 3px solid var(--gold);
+            border-radius: 2px;
+            padding: 30px;
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 0 30px rgba(0,0,0,0.3);
+        }
+
+        .scroll-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(212,175,55,0.02) 1px, rgba(212,175,55,0.02) 2px),
+                radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(0,0,0,0.4) 100%);
+            pointer-events: none;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scroll-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 4px;
+            background-clip: padding-box;
+            border: 2px solid transparent;
+        }
+
+        .scroll-entry {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(212,175,55,0.2);
+            position: relative;
+            z-index: 2;
+            animation: scrollReveal 0.8s ease;
+        }
+
+        @keyframes scrollReveal {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scroll-entry:last-child {
+            border-bottom: none;
+        }
+
+        .scroll-entry-user {
+            font-family: 'Tangerine', cursive;
+            font-size: 24px;
+            color: var(--gold);
+            margin-bottom: 8px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .scroll-entry-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--accent-cream);
+            font-style: italic;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+        }
+
+        .scroll-entry-time {
+            font-family: 'Cinzel', serif;
+            font-size: 10px;
+            color: rgba(212,175,55,0.6);
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        .scroll-input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .input-label {
+            font-family: 'Cinzel', serif;
+            font-size: 12px;
+            color: var(--dark-ink);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(212,175,55,0.3);
+            background: rgba(255,255,255,0.8);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 13px;
+            border-radius: 2px;
+            resize: vertical;
+            min-height: 80px;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(212,175,55,0.2);
+            background: white;
+        }
+
+        .char-count {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            color: var(--bronze);
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .submit-button {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--bronze) 100%);
+            color: white;
+            border: none;
+            border-radius: 2px;
+            font-family: 'Cinzel', serif;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(212,175,55,0.3);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212,175,55,0.4);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        /* IMAGE TABS */
+        .image-tab {
+            gap: 30px;
+        }
+
+        .image-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.2);
+            border: 2px solid rgba(212,175,55,0.3);
+            border-radius: 2px;
+            padding: 20px;
+            min-height: 400px;
+            overflow: auto;
+        }
+
+        .image-section img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 2px;
+        }
+
+        .image-section.placeholder {
+            color: var(--bronze);
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
             text-align: center;
         }
-        .hero-img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            border: 2px solid #d4af37;
-            margin-bottom: 30px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+
+        .content-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-height: 100%;
+            overflow-y: auto;
         }
-        .lyrics-container {
-            height: 120px;
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .audio-input {
+            padding: 12px;
+            background: rgba(212,175,55,0.1);
+            border: 1px dashed var(--gold);
+            border-radius: 2px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 13px;
+        }
+
+        .audio-input:hover {
+            background: rgba(212,175,55,0.2);
+        }
+
+        .audio-input input {
+            display: none;
+        }
+
+        .audio-playback {
+            padding: 12px;
+            background: rgba(0,0,0,0.1);
+            border: 1px solid var(--gold);
+            border-radius: 2px;
+            display: none;
+        }
+
+        .audio-playback.active {
+            display: block;
+        }
+
+        .audio-playback audio {
+            width: 100%;
+        }
+
+        /* CREATIVE CONTINUATION TAB */
+        .continuation-tab {
+            gap: 20px;
+        }
+
+        .continuation-content {
+            flex: 1;
+            display: flex;
+            gap: 20px;
             overflow: hidden;
-            position: relative;
-            margin: 30px 0;
-            border-top: 1px double #d4af37;
-            border-bottom: 1px double #d4af37;
         }
-        .lyrics-scroll {
-            position: absolute;
-            width: 100%;
-            animation: scroll-lyrics 25s linear infinite;
+
+        .theme-panel {
+            width: 35%;
+            background: rgba(0,0,0,0.2);
+            border: 2px solid rgba(212,175,55,0.3);
+            padding: 25px;
+            border-radius: 2px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
-        @keyframes scroll-lyrics {
-            0% { top: 100%; }
-            100% { top: -250%; }
+
+        .theme-panel h3 {
+            font-family: 'Tangerine', cursive;
+            font-size: 28px;
+            color: var(--gold);
         }
-        .lyrics-text {
-            font-size: 1.1em;
-            line-height: 2;
-            color: #f1e5ac;
+
+        .theme-content {
+            flex: 1;
+            overflow-y: auto;
         }
-        .calligraphy-footer {
-            font-family: 'Great Vibes', cursive;
-            font-size: 4em;
-            margin-top: 30px;
-            color: #d4af37;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+
+        .theme-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--accent-cream);
+        }
+
+        .continuation-creator {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: rgba(0,0,0,0.2);
+            border: 2px solid rgba(212,175,55,0.3);
+            padding: 25px;
+            border-radius: 2px;
+        }
+
+        .continuation-creator h3 {
+            font-family: 'Tangerine', cursive;
+            font-size: 28px;
+            color: var(--gold);
+        }
+
+        .continuation-textarea {
+            flex: 1;
+            padding: 15px;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(212,175,55,0.3);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 13px;
+            border-radius: 2px;
+            resize: none;
+            transition: all 0.3s ease;
+        }
+
+        .continuation-textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: white;
+            box-shadow: 0 0 15px rgba(212,175,55,0.2);
+        }
+
+        .continuation-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+        }
+
+        .continuation-meta span {
+            flex: 1;
+            font-family: 'Cinzel', serif;
+            color: var(--bronze);
+        }
+
+        /* FREE FORM TAB */
+        .freeform-tab {
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .freeform-section {
+            background: rgba(0,0,0,0.2);
+            border: 2px solid rgba(212,175,55,0.3);
+            padding: 25px;
+            border-radius: 2px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .freeform-section h3 {
+            font-family: 'Tangerine', cursive;
+            font-size: 28px;
+            color: var(--gold);
+        }
+
+        .freeform-textarea {
+            flex: 1;
+            padding: 15px;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(212,175,55,0.3);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 13px;
+            border-radius: 2px;
+            resize: none;
+            transition: all 0.3s ease;
+            min-height: 150px;
+        }
+
+        .freeform-textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: white;
+            box-shadow: 0 0 15px rgba(212,175,55,0.2);
+        }
+
+        .freeform-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .upload-zone {
+            padding: 20px;
+            background: rgba(212,175,55,0.05);
+            border: 2px dashed var(--gold);
+            border-radius: 2px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .upload-zone:hover {
+            background: rgba(212,175,55,0.15);
+        }
+
+        .upload-zone input {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 28px;
+            color: var(--gold);
+        }
+
+        .upload-text {
+            font-family: 'Cinzel', serif;
+            font-size: 12px;
+            color: var(--dark-ink);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--parchment);
+            padding: 40px;
+            border-radius: 4px;
+            max-width: 500px;
+            width: 90%;
+            border: 3px solid var(--gold);
+            box-shadow: 0 0 40px rgba(0,0,0,0.7);
+        }
+
+        .modal-title {
+            font-family: 'Tangerine', cursive;
+            font-size: 36px;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+
+        .modal-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 14px;
+            color: var(--dark-ink);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-button {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 2px;
+            font-family: 'Cinzel', serif;
+            font-size: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-button.confirm {
+            background: var(--gold);
+            color: white;
+        }
+
+        .modal-button.cancel {
+            background: rgba(212,175,55,0.2);
+            color: var(--dark-ink);
+            border: 1px solid var(--gold);
+        }
+
+        @media (max-width: 1400px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .continuation-content {
+                flex-direction: column;
+            }
+
+            .theme-panel {
+                width: 100%;
+                max-height: 300px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="mist"></div>
-    <div class="main-card">
-        <h1>Kandey Uttey</h1>
-        <p style="color: #f1e5ac; letter-spacing: 2px;">Nusrat Fateh Ali Khan</p>
-        
-        
-        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" class="hero-img" alt="Majestic Horse">
+    <div class="container">
+        <!-- SIDEBAR NAVIGATION -->
+        <div class="sidebar">
+            <div class="app-title">✦ The Eternal Chronicles ✦</div>
+            <div class="app-subtitle">A Song Of Pyre and K-lives</div>
 
-        <div class="lyrics-container">
-            <div class="lyrics-scroll">
-                <p class="lyrics-text">
-                    Kandey uttey meharaman ve...<br>
-                    Asan vikhre painde te tur na sake...<br>
-                    Tere ishq nachaya kar thaiya thaiya...<br>
-                    Bulleshah asan marna naheen...<br>
-                    Meri bukkal de vich chor...
-                </p>
+            <div class="nav-section">
+                <div class="nav-label">Primary</div>
+                <button class="nav-button active" onclick="switchTab('dashboard')">📹 Dashboard</button>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-label">Story Chapters</div>
+                <button class="nav-button" onclick="switchTab('image-1')">❄️ Chapter I</button>
+                <button class="nav-button" onclick="switchTab('image-2')">🔥 Chapter II</button>
+                <button class="nav-button" onclick="switchTab('image-3')">⛰️ Chapter III</button>
+                <button class="nav-button" onclick="switchTab('image-4')">🌸 Chapter IV</button>
+                <button class="nav-button" onclick="switchTab('image-5')">🌙 Chapter V</button>
+                <button class="nav-button" onclick="switchTab('image-6')">🌅 Chapter VI</button>
+                <button class="nav-button" onclick="switchTab('image-7')">✨ Chapter VII</button>
+                <button class="nav-button" onclick="switchTab('image-8')">💎 Chapter VIII</button>
+                <button class="nav-button" onclick="switchTab('image-9')">🌌 Chapter IX</button>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-label">Creative</div>
+                <button class="nav-button" onclick="switchTab('continuation')">✍️ Continue Story</button>
+                <button class="nav-button" onclick="switchTab('freeform')">🎨 Free Form</button>
             </div>
         </div>
 
-        <div class="calligraphy-footer">"Kandey uttey"</div>
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- DASHBOARD TAB -->
+            <div id="dashboard" class="tab-content active">
+                <div class="content-frame">
+                    <div class="dashboard-grid">
+                        <!-- Video Section -->
+                        <div class="video-section">
+                            <div class="input-label">Featured Story - Battle Hymn</div>
+                            <div class="video-player" id="videoPlayer">
+                                <video controls>
+                                    <source src="./media/video.mp4" type="video/mp4">
+                                    <p>Please place video.mp4 in the ./media folder</p>
+                                </video>
+                            </div>
+                            <div class="audio-upload">
+                                <input type="file" id="audioUpload" accept="audio/*" onchange="updateAudio(this)">
+                                <span style="cursor: pointer; display: block;">📁 Replace Background Audio</span>
+                                <div style="font-size: 11px; opacity: 0.7; margin-top: 5px;">Upload MP3/WAV (similar duration)</div>
+                            </div>
+                            <div class="audio-playback" id="audioPlayback">
+                                <audio id="customAudio" controls style="width: 100%;"></audio>
+                            </div>
+                        </div>
+
+                        <!-- Scroll Section -->
+                        <div class="scroll-section">
+                            <div class="input-label">The Ancient Scroll</div>
+                            <div class="scroll-container" id="scrollContainer">
+                                <div style="text-align: center; color: rgba(212,175,55,0.5); position: relative; z-index: 2;">
+                                    <div style="font-family: 'Tangerine', cursive; font-size: 28px; margin-bottom: 10px;">~ Begin your tale ~</div>
+                                    <p style="font-family: 'Cormorant Garamond', serif; font-size: 13px;">Contributions appear here in chronological order</p>
+                                </div>
+                            </div>
+
+                            <div class="scroll-input-section">
+                                <div class="input-label">Add Your Text</div>
+                                <input type="text" class="text-input" id="userNameInput" placeholder="Your name..." maxlength="50" style="min-height: 40px;">
+                                <textarea class="text-input" id="storyTextInput" placeholder="Write your contribution to the story..." maxlength="4000" style="min-height: 100px;" onkeyup="updateCharCount(this, 'dashboardCount')"></textarea>
+                                <div class="char-count"><span id="dashboardCount">0</span> / 4000</div>
+                                <button class="submit-button" onclick="addStoryEntry('dashboard')">✦ Add to Scroll ✦</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IMAGE TABS 1-9 -->
+            <div id="image-1" class="tab-content image-tab">
+                <div class="content-frame">
+                    <div style="display: flex; gap: 30px; width: 100%; height: 100%;">
+                        <div class="image-section">
+                            <img src="./media/img1.png" alt="Chapter I" onerror="this.parentElement.classList.add('placeholder'); this.parentElement.innerHTML='❄️ Chapter I (The Frozen Awakening)<div style=\"font-size: 12px; margin-top: 10px; opacity: 0.6;\">Place img1.png in ./media folder</div>'">
+                        </div>
+                        <div class="content-inputs">
+                            <div class="input-group">
+                                <div class="input-label">Narrator Name</div>
+                                <input type="text" class="text-input" placeholder="Who tells this chapter?" maxlength="50" style="min-height: 40px;">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Story Text (0-4000 chars)</div>
+                                <textarea class="text-input" placeholder="Write the story for this chapter..." maxlength="4000" onkeyup="updateCharCount(this, 'image1Count')"></textarea>
+                                <div class="char-count"><span id="image1Count">0</span> / 4000</div>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Audio Narration (up to 7 min)</div>
+                                <div class="audio-input">
+                                    <input type="file" accept="audio/*" onchange="handleAudioUpload(event, this)">
+                                    <span>📁 Upload Audio File</span>
+                                </div>
+                                <div class="audio-playback">
+                                    <audio controls style="width: 100%;"></audio>
+                                </div>
+                            </div>
+                            <button class="submit-button" onclick="saveChapter(1)">✦ Save Chapter ✦</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="image-2" class="tab-content image-tab">
+                <div class="content-frame">
+                    <div style="display: flex; gap: 30px; width: 100%; height: 100%;">
+                        <div class="image-section">
+                            <img src="./media/img2.png" alt="Chapter II" onerror="this.parentElement.classList.add('placeholder'); this.parentElement.innerHTML='🔥 Chapter II (The Pyre Awakens)<div style=\"font-size: 12px; margin-top: 10px; opacity: 0.6;\">Place img2.png in ./media folder</div>'">
+                        </div>
+                        <div class="content-inputs">
+                            <div class="input-group">
+                                <div class="input-label">Narrator Name</div>
+                                <input type="text" class="text-input" placeholder="Who tells this chapter?" maxlength="50" style="min-height: 40px;">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Story Text (0-4000 chars)</div>
+                                <textarea class="text-input" placeholder="Write the story for this chapter..." maxlength="4000" onkeyup="updateCharCount(this, 'image2Count')"></textarea>
+                                <div class="char-count"><span id="image2Count">0</span> / 4000</div>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Audio Narration (up to 7 min)</div>
+                                <div class="audio-input">
+                                    <input type="file" accept="audio/*" onchange="handleAudioUpload(event, this)">
+                                    <span>📁 Upload Audio File</span>
+                                </div>
+                                <div class="audio-playback">
+                                    <audio controls style="width: 100%;"></audio>
+                                </div>
+                            </div>
+                            <button class="submit-button" onclick="saveChapter(2)">✦ Save Chapter ✦</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="image-3" class="tab-content image-tab">
+                <div class="content-frame">
+                    <div style="display: flex; gap: 30px; width: 100%; height: 100%;">
+                        <div class="image-section">
+                            <img src="./media/img3.png" alt="Chapter III" onerror="this.parentElement.classList.add('placeholder'); this.parentElement.innerHTML='⛰️ Chapter III (Mountains of Destiny)<div style=\"font-size: 12px; margin-top: 10px; opacity: 0.6;\">Place img3.png in ./media folder</div>'">
+                        </div>
+                        <div class="content-inputs">
+                            <div class="input-group">
+                                <div class="input-label">Narrator Name</div>
+                                <input type="text" class="text-input" placeholder="Who tells this chapter?" maxlength="50" style="min-height: 40px;">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Story Text (0-4000 chars)</div>
+                                <textarea class="text-input" placeholder="Write the story for this chapter..." maxlength="4000" onkeyup="updateCharCount(this, 'image3Count')"></textarea>
+                                <div class="char-count"><span id="image3Count">0</span> / 4000</div>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Audio Narration (up to 7 min)</div>
+                                <div class="audio-input">
+                                    <input type="file" accept="audio/*" onchange="handleAudioUpload(event, this)">
+                                    <span>📁 Upload Audio File</span>
+                                </div>
+                                <div class="audio-playback">
+                                    <audio controls style="width: 100%;"></audio>
+                                </div>
+                            </div>
+                            <button class="submit-button" onclick="saveChapter(3)">✦ Save Chapter ✦</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="image-4" class="tab-content image-tab">
+                <div class="content-frame">
+                    <div style="display: flex; gap: 30px; width: 100%; height: 100%;">
+                        <div class="image-section">
+                            <img src="./media/img4.png" alt="Chapter IV" onerror="this.parentElement.classList.add('placeholder'); this.parentElement.innerHTML='🌸 Chapter IV (Blossoming Beginnings)<div style=\"font-size: 12px; margin-top: 10px; opacity: 0.6;\">Place img4.png in ./media folder</div>'">
+                        </div>
+                        <div class="content-inputs">
+                            <div class="input-group">
+                                <div class="input-label">Narrator Name</div>
+                                <input type="text" class="text-input" placeholder="Who tells this chapter?" maxlength="50" style="min-height: 40px;">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Story Text (0-4000 chars)</div>
+                                <textarea class="text-input" placeholder="Write the story for this chapter..." maxlength="4000" onkeyup="updateCharCount(this, 'image4Count')"></textarea>
+                                <div class="char-count"><span id="image4Count">0</span> / 4000</div>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Audio Narration (up to 7 min)</div>
+                                <div class="audio-input">
+                                    <input type="file" accept="audio/*" onchange="handleAudioUpload(event, this)">
+                                    <span>📁 Upload Audio File</span>
+                                </div>
+                                <div class="audio-playback">
+                                    <audio controls style="width: 100%;"></audio>
+                                </div>
+                            </div>
+                            <button class="submit-button" onclick="saveChapter(4)">✦ Save Chapter ✦</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="image-5" class="tab-content image-tab">
+                <div class="content-frame">
+                    <div style="display: flex; gap: 30px; width: 100%; height: 100%;">
+                        <div class="image-section">
+                            <img src="./media/img5.png" alt="Chapter V" onerror="this.parentElement.classList.add('placeholder'); this.parentElement.innerHTML='🌙 Chapter V (Moonlit Revelations)<div style=\"font-size: 12px; margin-top: 10px; opacity: 0.6;\">Place img5.png in ./media folder</div>'">
+                        </div>
+                        <div class="content-inputs">
+                            <div class="input-group">
+                                <div class="input-label">Narrator Name</div>
+                                <input type="text" class="text-input" placeholder="Who tells this chapter?" maxlength="50" style="min-height: 40px;">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Story Text (0-4000 chars)</div>
+                                <textarea class="text-input" placeholder="Write the story for this chapter..." maxlength="4000" onkeyup="updateCharCount(this, 'image5Count')"></textarea>
+                                <div class="char-count"><span id="image5Count">0</span> / 4000</div>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Audio Narration (up to 7 min)</div>
+                                <div class="audio-input">
+                                    <input type="file" accept="audio/*" onchange="handleAudioUpload(event, this)">
+                                    <span>📁 Upload Audio File</span>
+                                </div>
+                                <div class="audio-playback">
+                                    <audio controls style="width: 100%;"></audio>
+                                </div>
+                            </div>
+                            <button class="submit-button" onclick="saveChapter(5)">✦ Save Chapter ✦</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="image-6" class="tab-content image-tab">
+                <div class="content-frame">
+                    <div style="display: flex; gap: 30px; width: 100%; height: 100%;">
+                        <div class="image-section">
+                            <img src="./media/img6.png" alt="Chapter VI" onerror="this.parentElement.classList.add('placeholder'); this.parentElement.innerHTML='🌅 Chapter VI (Golden Horizons)<div style=\"font-size: 12px; margin-top: 10px; opacity: 0.6;\">Place img6.png in ./media folder</div>'">
+                        </div>
+                        <div class="content-inputs">
+                            <div class="input-group">
+                                <div class="input-label">Narrator Name</div>
+                                <input type="text" class="text-input" placeholder="Who tells this chapter?" maxlength="50" style="min-height: 40px;">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Story Text (0-4000 chars)</div>
+                                <textarea class="text-input" placeholder="Write the story for this chapter..." maxlength="4000" onkeyup="updateCharCount(this, 'image6Count')"></textarea>
+                                <div class="char-count"><span id="image6Count">0</span> / 4000</div>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Audio Narration (up to 7 min)</div>
+                                <div class="audio-input">
+                                    <input type="file" accept="audio/*" onchange="handleAudioUpload(event, this)">
+                                    <span>📁 Upload Audio File</span>
+                                </div>
+                                <div class="audio-playback">
+                                    <audio controls style="width: 100%;"></audio>
+                                </div>
+                            </div>
+                            <button class="submit-button" onclick="saveChapter(6)">✦ Save Chapter ✦</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="image-7" class="tab-content image-tab">
+                <div class="content-frame">
+                    <div style="display: flex; gap: 30px; width: 100%; height: 100%;">
+                        <div class="image-section">
+                            <img src="./media/img7.png" alt="Chapter VII" onerror="this.parentElement.classList.add('placeholder'); this.parentElement.innerHTML='✨ Chapter VII (Twilight Convergence)<div style=\"font-size: 12px; margin-top: 10px; opacity: 0.6;\">Place img7.png in ./media folder</div>'">
+                        </div>
+                        <div class="content-inputs">
+                            <div class="input-group">
+                                <div class="input-label">Narrator Name</div>
+                                <input type="text" class="text-input" placeholder="Who tells this chapter?" maxlength="50" style="min-height: 40px;">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Story Text (0-4000 chars)</div>
+                                <textarea class="text-input" placeholder="Write the story for this chapter..." maxlength="4000" onkeyup="updateCharCount(this, 'image7Count')"></textarea>
+                                <div class="char-count"><span id="image7Count">0</span> / 4000</div>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Audio Narration (up to 7 min)</div>
+                                <div class="audio-input">
+                                    <input type="file" accept="audio/*" onchange="handleAudioUpload(event, this)">
+                                    <span>📁 Upload Audio File</span>
+                                </div>
+                                <div class="audio-playback">
+                                    <audio controls style="width: 100%;"></audio>
+                                </div>
+                            </div>
+                            <button class="submit-button" onclick="saveChapter(7)">✦ Save Chapter ✦</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="image-8" class="tab-content image-tab">
+                <div class="content-frame">
+                    <div style="display: flex; gap: 30px; width: 100%; height: 100%;">
+                        <div class="image-section">
+                            <img src="./media/img8.png" alt="Chapter VIII" onerror="this.parentElement.classList.add('placeholder'); this.parentElement.innerHTML='💎 Chapter VIII (Crystalline Truth)<div style=\"font-size: 12px; margin-top: 10px; opacity: 0.6;\">Place img8.png in ./media folder</div>'">
+                        </div>
+                        <div class="content-inputs">
+                            <div class="input-group">
+                                <div class="input-label">Narrator Name</div>
+                                <input type="text" class="text-input" placeholder="Who tells this chapter?" maxlength="50" style="min-height: 40px;">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Story Text (0-4000 chars)</div>
+                                <textarea class="text-input" placeholder="Write the story for this chapter..." maxlength="4000" onkeyup="updateCharCount(this, 'image8Count')"></textarea>
+                                <div class="char-count"><span id="image8Count">0</span> / 4000</div>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Audio Narration (up to 7 min)</div>
+                                <div class="audio-input">
+                                    <input type="file" accept="audio/*" onchange="handleAudioUpload(event, this)">
+                                    <span>📁 Upload Audio File</span>
+                                </div>
+                                <div class="audio-playback">
+                                    <audio controls style="width: 100%;"></audio>
+                                </div>
+                            </div>
+                            <button class="submit-button" onclick="saveChapter(8)">✦ Save Chapter ✦</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="image-9" class="tab-content image-tab">
+                <div class="content-frame">
+                    <div style="display: flex; gap: 30px; width: 100%; height: 100%;">
+                        <div class="image-section">
+                            <img src="./media/img9.png" alt="Chapter IX" onerror="this.parentElement.classList.add('placeholder'); this.parentElement.innerHTML='🌌 Chapter IX (The Infinite Cycle)<div style=\"font-size: 12px; margin-top: 10px; opacity: 0.6;\">Place img9.png in ./media folder</div>'">
+                        </div>
+                        <div class="content-inputs">
+                            <div class="input-group">
+                                <div class="input-label">Narrator Name</div>
+                                <input type="text" class="text-input" placeholder="Who tells this chapter?" maxlength="50" style="min-height: 40px;">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Story Text (0-4000 chars)</div>
+                                <textarea class="text-input" placeholder="Write the story for this chapter..." maxlength="4000" onkeyup="updateCharCount(this, 'image9Count')"></textarea>
+                                <div class="char-count"><span id="image9Count">0</span> / 4000</div>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-label">Audio Narration (up to 7 min)</div>
+                                <div class="audio-input">
+                                    <input type="file" accept="audio/*" onchange="handleAudioUpload(event, this)">
+                                    <span>📁 Upload Audio File</span>
+                                </div>
+                                <div class="audio-playback">
+                                    <audio controls style="width: 100%;"></audio>
+                                </div>
+                            </div>
+                            <button class="submit-button" onclick="saveChapter(9)">✦ Save Chapter ✦</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTINUATION TAB -->
+            <div id="continuation" class="tab-content continuation-tab">
+                <div class="content-frame">
+                    <h1 style="font-family: 'Tangerine', cursive; font-size: 42px; color: var(--gold); margin-bottom: 20px; width: 100%; text-align: center;">✦ Continue the Chronicles ✦</h1>
+                    <div class="continuation-content">
+                        <div class="theme-panel">
+                            <h3>Current Theme</h3>
+                            <div class="theme-content">
+                                <p class="theme-text">A warrior meditates surrounded by eternal flames, the manifestation of power and pyre. This is the tale of K-lives—those bound by fate and flame, seeking balance between inner fire and outer chaos. Select chapters and themes to continue the story. Your creative additions will build upon the established narrative arc. Consider the tone, character development, and plot progression as you weave your own chapter into this tapestry.</p>
+                                <div style="margin-top: 20px;">
+                                    <p style="font-family: 'Cinzel', serif; font-size: 11px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px;">Select Source Material:</p>
+                                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--accent-cream); font-family: 'Cormorant Garamond', serif;">
+                                            <input type="radio" name="theme-source" value="dashboard" checked> Dashboard Story
+                                        </label>
+                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--accent-cream); font-family: 'Cormorant Garamond', serif;">
+                                            <input type="radio" name="theme-source" value="chapters"> From a Chapter
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="continuation-creator">
+                            <h3>Your Continuation</h3>
+                            <textarea class="continuation-textarea" id="continuationText" placeholder="Write your continuation... Build upon the theme, honor the tone, and create something memorable." maxlength="8000" onkeyup="updateCharCount(this, 'continuationCount')"></textarea>
+                            <div class="continuation-meta">
+                                <span>By: <input type="text" placeholder="Your name" style="background: transparent; border: none; border-bottom: 1px solid var(--gold); color: var(--dark-ink); font-family: 'Cinzel', serif; width: 120px;" maxlength="50"></span>
+                                <span style="text-align: right;"><span id="continuationCount">0</span> / 8000</span>
+                            </div>
+                            <button class="submit-button" onclick="submitContinuation()">✦ Submit Continuation ✦</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FREEFORM TAB -->
+            <div id="freeform" class="tab-content freeform-tab">
+                <div class="content-frame">
+                    <h1 style="font-family: 'Tangerine', cursive; font-size: 42px; color: var(--gold); margin-bottom: 20px; width: 100%; text-align: center;">✦ The Infinite Canvas ✦</h1>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; height: 100%;">
+                        <div class="freeform-section">
+                            <h3>Write Your Original Story</h3>
+                            <textarea class="freeform-textarea" placeholder="Create an entirely new story. No limits, no themes. Pure imagination." maxlength="10000" onkeyup="updateCharCount(this, 'freeformCount')"></textarea>
+                            <div class="char-count" style="text-align: right;"><span id="freeformCount">0</span> / 10000</div>
+                            <button class="submit-button" onclick="submitFreeform('story')">✦ Save Original Story ✦</button>
+                        </div>
+
+                        <div class="freeform-section">
+                            <h3>Upload Media</h3>
+                            <div class="freeform-grid">
+                                <div class="upload-zone">
+                                    <input type="file" accept="image/*" onchange="handleMediaUpload(event)">
+                                    <div class="upload-icon">🖼️</div>
+                                    <div class="upload-text">Upload Image</div>
+                                </div>
+                                <div class="upload-zone">
+                                    <input type="file" accept="audio/*" onchange="handleMediaUpload(event)">
+                                    <div class="upload-icon">🎵</div>
+                                    <div class="upload-text">Upload Audio</div>
+                                </div>
+                                <div class="upload-zone">
+                                    <input type="file" accept="video/*" onchange="handleMediaUpload(event)">
+                                    <div class="upload-icon">🎬</div>
+                                    <div class="upload-text">Upload Video</div>
+                                </div>
+                                <div class="upload-zone">
+                                    <input type="file" accept=".pdf,.doc,.docx" onchange="handleMediaUpload(event)">
+                                    <div class="upload-icon">📄</div>
+                                    <div class="upload-text">Upload Document</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- SUCCESS MODAL -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-title">✦ Success ✦</div>
+            <div class="modal-text" id="modalText">Your contribution has been added to the chronicles!</div>
+            <div class="modal-buttons">
+                <button class="modal-button confirm" onclick="closeModal()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const storyData = {
+            dashboard: [],
+            chapters: [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+            continuations: [],
+            freeform: []
+        };
+
+        function updateCharCount(textarea, spanId) {
+            document.getElementById(spanId).textContent = textarea.value.length;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            
+            document.querySelectorAll('.nav-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const navButtons = document.querySelectorAll('.nav-button');
+            navButtons.forEach(btn => {
+                if (btn.getAttribute('onclick')?.includes(`'${tabName}'`)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function updateAudio(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('customAudio').src = e.target.result;
+                    document.getElementById('audioPlayback').classList.add('active');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function handleAudioUpload(event, element) {
+            const file = event.target.files[0];
+            if (file) {
+                const audio = new Audio();
+                audio.onloadedmetadata = function() {
+                    if (audio.duration > 420) {
+                        alert('Audio file exceeds 7 minutes. Please upload a shorter file.');
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const playback = element.parentElement.querySelector('.audio-playback');
+                        playback.classList.add('active');
+                        playback.querySelector('audio').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                };
+                audio.src = URL.createObjectURL(file);
+            }
+        }
+
+        function addStoryEntry(source) {
+            const nameInput = document.getElementById('userNameInput');
+            const textInput = document.getElementById('storyTextInput');
+            
+            if (!nameInput.value.trim() || !textInput.value.trim()) {
+                alert('Please enter both name and story text');
+                return;
+            }
+
+            const entry = {
+                name: nameInput.value,
+                text: textInput.value,
+                timestamp: new Date().toLocaleString()
+            };
+
+            storyData.dashboard.push(entry);
+
+            const scrollContainer = document.getElementById('scrollContainer');
+            const entryEl = document.createElement('div');
+            entryEl.className = 'scroll-entry';
+            entryEl.innerHTML = `
+                <div class="scroll-entry-user">${entry.name}</div>
+                <div class="scroll-entry-text">${entry.text}</div>
+                <div class="scroll-entry-time">${entry.timestamp}</div>
+            `;
+            scrollContainer.appendChild(entryEl);
+
+            nameInput.value = '';
+            textInput.value = '';
+            document.getElementById('dashboardCount').textContent = '0';
+
+            showModal('Your contribution has been inscribed in the eternal scroll!');
+        }
+
+        function saveChapter(chapterNum) {
+            showModal(`Chapter ${chapterNum} has been saved to the archives!`);
+        }
+
+        function submitContinuation() {
+            showModal('Your continuation has been woven into the narrative tapestry!');
+        }
+
+        function submitFreeform(type) {
+            showModal('Your creation has been preserved in the infinite canvas!');
+        }
+
+        function handleMediaUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                showModal(`"${file.name}" has been added to your collection!`);
+            }
+        }
+
+        function showModal(message) {
+            document.getElementById('modalText').textContent = message;
+            document.getElementById('successModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.nav-button').classList.add('active');
+        });
+    </script>
 </body>
 </html>
