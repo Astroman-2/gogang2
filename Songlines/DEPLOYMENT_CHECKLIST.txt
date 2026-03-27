@@ -1,0 +1,6 @@
+SONGLINES DEPLOYMENT CHECKLIST
+[ ] Verify index.html is in the root Songlines folder.
+[ ] Ensure 'media' folder contains video.mp4.
+[ ] Ensure 'media' folder contains img1.png through img10.png.
+[ ] Check CSS variables for gold accents (#D4AF37).
+[ ] Test responsive scroll on mobile and desktop.

@@ -1,0 +1,4 @@
+Welcome to Songlines.
+
+To begin, open index.html in any modern web browser.
+All project documentation is available in Markdown format within this directory.
