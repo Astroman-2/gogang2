@@ -1,13 +1,18 @@
-# LyricFlow: Lyric-Image Blog Ecosystem
+# Songlines: A Song of Pyre and K~lives
 
-## Setup Instructions
-1. **Environment**: Copy `.env.example` to `.env` and add your `DATABASE_URL` and `UNSPLASH_ACCESS_KEY`.
-2. **Database**: Run `npx prisma migrate dev --name init` to set up your PostgreSQL schema.
-3. **Install**: Run `npm install` in the root.
-4. **Launch**: Run `npm run dev` to start the Express server (Port 5000) and React client simultaneously.
+## The Concept
+Songlines is an immersive, Eldritch-themed web dashboard designed as a visual and auditory journey. Centered around the 'A Song of Pyre and K~lives' narrative, the application guides users through nine distinct chapters, each represented by unique atmospheric shifts and high-fantasy imagery.
+
+## Visual Aesthetic
+- **Theme**: Eldritch Archive / High-Fantasy
+- **Palette**: Deep charcoal and obsidian panels with #D4AF37 Gold accents.
+- **Typography**: Ornate calligraphy headers paired with clean, readable serif body text.
 
 ## Features
-- **Autonomous Content**: Scrapes YouTube transcripts via `youtube-transcript`.
-- **Dynamic Visuals**: Generates high-end imagery via Unsplash API.
-- **Interaction**: Persistent social reactions and comments via Prisma/PostgreSQL.
-- **Dark UI**: Built with React + Tailwind CSS.
+- **Continuous Scroll Engine**: Seamlessly transitions between chapters (I-IX).
+- **Dynamic Media**: Background video integration and chapter-specific high-fidelity imagery.
+- **Eldritch Dashboard**: A specialized UI for monitoring 'Pyre' and 'Lives' metrics.
+
+## Tech Stack
+- HTML5, CSS3 (Custom Variables), and Vanilla JavaScript.
+- Optimized for GitHub Pages deployment.
