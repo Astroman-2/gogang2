@@ -1,9 +1,9 @@
 # Arcolabs — Full-Stack Draft State Workflow
 
 [![CI](https://github.com/YOUR_USERNAME/arcolabs-workflow/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/arcolabs-workflow/actions)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-orange?logo=github)](https://YOUR_USERNAME.github.io/arcolabs-workflow/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-orange?logo=github)](https://YOUR_USERNAME.github.io/gogang2/arcolabs-workflow/arcolabs-workflow/)
 
-> **Live interactive demo →** [https://YOUR_USERNAME.github.io/arcolabs-workflow/](https://YOUR_USERNAME.github.io/arcolabs-workflow/)
+> **Live interactive demo →** [https://YOUR_USERNAME.github.io/gogang2/arcolabs-workflow/arcolabs-workflow/](https://YOUR_USERNAME.github.io/gogang2/arcolabs-workflow/arcolabs-workflow/)
 >
 > *(Replace `YOUR_USERNAME` with your GitHub username after pushing.)*
 
@@ -112,7 +112,7 @@ Any out-of-order transition returns `HTTP 400` with a descriptive error.
 1. Push this repo to GitHub.
 2. Go to **Settings → Pages**.
 3. Set **Source** to `Deploy from a branch`, branch `main`, folder `/docs`.
-4. Click **Save** — your demo will be live at `https://YOUR_USERNAME.github.io/arcolabs-workflow/` within ~60 seconds.
+4. Click **Save** — your demo will be live at `https://YOUR_USERNAME.github.io/gogang2/arcolabs-workflow/arcolabs-workflow/` within ~60 seconds.
 5. Update the two `YOUR_USERNAME` placeholders in this README.
 
 The `docs/index.html` is a fully self-contained demo — no backend required. It simulates the entire API in-browser so interviewers can explore the workflow instantly.
