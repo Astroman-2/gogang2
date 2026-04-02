@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arcolabs — Draft State Workflow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Variables ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue-50: #eef6fd; --blue-100: #d6eaf8; --blue-200: #aed3f4;
+      --blue-300: #76b8ee; --blue-400: #4399e2; --blue-500: #1f7bcc;
+      --blue-600: #1562a8; --blue-700: #0e4880;
+      --gold-100: #ffecc8; --gold-200: #ffd48a; --gold-300: #ffb940;
+      --gold-400: #f99c1c; --gold-500: #e07d08; --gold-600: #b85e04;
+      --white: #fff; --gray-50: #f7f9fc; --gray-100: #edf1f7;
+      --gray-200: #dce4ef; --gray-400: #9aaec4; --gray-600: #566a82; --gray-800: #1e2d3d;
+      --r-sm: 8px; --r-md: 12px; --r-lg: 20px; --r-xl: 28px;
+      --shadow-sm: 0 1px 4px rgba(30,45,61,.07);
+      --shadow-md: 0 4px 16px rgba(30,45,61,.11);
+      --shadow-lg: 0 8px 32px rgba(30,45,61,.14);
+    }
+
+    body { font-family: 'DM Sans', sans-serif; background: var(--blue-50); color: var(--gray-800); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+    /* ── Shell ── */
+    .app-shell { display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 220px; flex-shrink: 0;
+      background: linear-gradient(175deg, var(--blue-700) 0%, var(--blue-600) 60%, #1a4f8a 100%);
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 10;
+      box-shadow: 4px 0 24px rgba(14,72,128,.25);
+    }
+    .sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 24px 22px 20px; border-bottom: 1px solid rgba(255,255,255,.12); }
+    .logo-mark { width: 36px; height: 36px; background: linear-gradient(135deg, var(--gold-300), var(--gold-500)); color: #fff; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(240,155,25,.4); }
+    .logo-text { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; color: #fff; letter-spacing: .02em; }
+    .sidebar-nav { flex: 1; padding: 18px 10px; display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: var(--r-md); color: rgba(255,255,255,.65); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .18s; }
+    .nav-item:hover { background: rgba(255,255,255,.1); color: rgba(255,255,255,.95); }
+    .nav-item.active { background: rgba(255,255,255,.16); color: #fff; font-weight: 600; }
+    .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+    .sidebar-footer { padding: 16px; border-top: 1px solid rgba(255,255,255,.12); }
+    .user-chip { display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,.8); font-size: 13px; }
+    .avatar { width: 32px; height: 32px; background: linear-gradient(135deg, var(--gold-300), var(--gold-400)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; color: #fff; }
+
+    /* ── Main ── */
+    .main-area { flex: 1; margin-left: 220px; padding: 36px 40px; background: var(--blue-50); min-height: 100vh; position: relative; }
+
+    /* ── Error Banner ── */
+    .error-banner { position: fixed; top: 20px; right: 20px; background: #fff2f2; border: 1.5px solid #f5a5a5; color: #c0392b; padding: 12px 18px; border-radius: var(--r-md); font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-md); z-index: 100; animation: slideIn .25s ease; }
+    .error-banner button { background: none; border: none; cursor: pointer; color: #c0392b; font-size: 16px; }
+    @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    /* ── Dashboard ── */
+    .dashboard { max-width: 780px; }
+    .dash-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+    .dash-eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--blue-500); font-weight: 600; margin-bottom: 6px; }
+    .dash-title { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; color: var(--gray-800); line-height: 1.15; }
+    .dash-stats { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .stat-pill { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: #fff; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--gray-600); box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); }
+    .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .draft-dot { background: var(--blue-400); }
+    .performed-dot { background: var(--gold-400); }
+    .approved-dot { background: #2ecc71; }
+
+    /* ── Flow Diagram ── */
+    .flow-diagram { display: flex; align-items: center; gap: 12px; margin-bottom: 36px; background: #fff; border: 1px solid var(--blue-200); border-radius: var(--r-xl); padding: 24px 32px; box-shadow: var(--shadow-sm); }
+    .flow-step { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--gray-600); flex: 1; }
+    .flow-circle { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: #fff; }
+    .draft-circle { background: linear-gradient(135deg, var(--blue-400), var(--blue-500)); }
+    .performed-circle { background: linear-gradient(135deg, var(--gold-300), var(--gold-500)); }
+    .approved-circle { background: linear-gradient(135deg, #2ecc71, #1a9c50); }
+    .flow-arrow { font-size: 22px; color: var(--blue-300); flex-shrink: 0; }
+
+    /* ── Create Card ── */
+    .create-card { background: #fff; border-radius: var(--r-xl); padding: 36px; box-shadow: var(--shadow-md); border: 1px solid var(--blue-100); }
+    .card-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .card-sub { font-size: 14px; color: var(--gray-600); margin-bottom: 28px; }
+    .field-label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--gray-600); margin-bottom: 8px; }
+    .field-row { margin-bottom: 24px; }
+    .state-row { display: flex; gap: 8px; }
+    .state-select { flex: 1; height: 46px; padding: 0 14px; border: 1.5px solid var(--blue-200); border-radius: var(--r-md); background: var(--blue-50); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; color: var(--gray-800); outline: none; cursor: pointer; transition: border-color .15s; }
+    .state-select:focus { border-color: var(--blue-400); }
+    .add-state-btn { width: 46px; height: 46px; border: 1.5px dashed var(--blue-300); background: transparent; border-radius: var(--r-md); font-size: 22px; color: var(--blue-400); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+    .add-state-btn:hover { background: var(--blue-50); border-color: var(--blue-400); }
+    .cta-btn { width: 100%; height: 52px; background: linear-gradient(135deg, var(--gold-400), var(--gold-500)); color: #fff; border: none; border-radius: var(--r-lg); font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 16px rgba(224,125,8,.35); transition: all .2s; }
+    .cta-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(224,125,8,.45); }
+    .cta-btn:disabled { opacity: .65; cursor: not-allowed; }
+
+    /* ── Demo Notice ── */
+    .demo-notice { background: linear-gradient(90deg, #fff8ec, #fff3d4); border: 1.5px solid var(--gold-200); border-radius: var(--r-md); padding: 14px 18px; margin-bottom: 24px; font-size: 13px; color: var(--gold-600); display: flex; align-items: flex-start; gap: 10px; }
+    .demo-notice strong { display: block; font-weight: 700; margin-bottom: 3px; color: var(--gold-600); }
+
+    /* ── Record View ── */
+    .record-view { max-width: 1000px; animation: fadeUp .3s ease; }
+    @keyframes fadeUp { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .record-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .back-btn { background: none; border: 1.5px solid var(--blue-200); padding: 8px 16px; border-radius: 20px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: var(--blue-600); cursor: pointer; transition: all .15s; }
+    .back-btn:hover { background: var(--blue-50); border-color: var(--blue-400); }
+    .record-meta { display: flex; align-items: center; gap: 10px; }
+    .record-id-tag { font-size: 13px; font-weight: 600; color: var(--gray-400); background: var(--gray-100); padding: 4px 10px; border-radius: 20px; }
+    .status-badge { padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: .08em; }
+    .badge-draft { background: #e2edf8; color: var(--blue-600); }
+    .badge-performed { background: #fff3d4; color: var(--gold-600); }
+    .badge-approved { background: #d4f0e4; color: #1a7a4a; }
+    .record-title { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+    .record-sub { font-size: 13px; color: var(--gray-600); margin-bottom: 24px; }
+    .lock-banner { background: linear-gradient(90deg, #d4f0e4, #e8f8f0); border: 1.5px solid #a8dfbf; color: #1a7a4a; padding: 12px 18px; border-radius: var(--r-md); font-size: 14px; font-weight: 600; margin-bottom: 24px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+    .form-card, .audit-card { background: #fff; border-radius: var(--r-xl); padding: 28px; box-shadow: var(--shadow-md); border: 1px solid var(--blue-100); }
+    .section-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--blue-100); }
+    .field-group { margin-bottom: 16px; }
+    .field-input, .field-textarea { width: 100%; padding: 10px 14px; border: 1.5px solid var(--blue-200); border-radius: var(--r-sm); background: var(--blue-50); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--gray-800); outline: none; transition: border-color .15s; resize: none; }
+    .field-input:focus, .field-textarea:focus { border-color: var(--blue-400); background: #fff; }
+    .field-input:disabled, .field-textarea:disabled { background: var(--gray-100); color: var(--gray-600); cursor: not-allowed; border-color: var(--gray-200); }
+    .items-list { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 0; }
+    .item-tag { background: var(--blue-100); color: var(--blue-700); border-radius: 6px; padding: 4px 12px; font-size: 12px; font-weight: 600; }
+    .action-row { margin-top: 24px; display: flex; gap: 12px; }
+    .perform-btn { flex: 1; height: 46px; background: linear-gradient(135deg, var(--gold-300), var(--gold-500)); color: #fff; border: none; border-radius: var(--r-md); font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 3px 12px rgba(224,125,8,.3); transition: all .2s; }
+    .perform-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(224,125,8,.4); }
+    .approve-btn { flex: 1; height: 46px; background: linear-gradient(135deg, #2ecc71, #1a9c50); color: #fff; border: none; border-radius: var(--r-md); font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 3px 12px rgba(46,204,113,.3); transition: all .2s; }
+    .approve-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(46,204,113,.4); }
+    .perform-btn:disabled, .approve-btn:disabled { opacity: .65; cursor: not-allowed; }
+
+    /* ── Audit Log ── */
+    .log-list { display: flex; flex-direction: column; gap: 6px; }
+    .no-logs { font-size: 13px; color: var(--gray-400); text-align: center; padding: 24px 0; }
+    .log-entry { border: 1.5px solid var(--blue-100); border-radius: var(--r-md); overflow: hidden; cursor: pointer; transition: all .15s; background: var(--blue-50); }
+    .log-entry:hover { border-color: var(--blue-300); background: var(--blue-100); }
+    .log-entry.expanded { border-color: var(--gold-300); background: #fff; }
+    .log-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+    .log-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; font-weight: 700; }
+    .action-create { background: var(--blue-100); color: var(--blue-600); }
+    .action-perform { background: #ffecc8; color: var(--gold-600); }
+    .action-approve { background: #d4f0e4; color: #1a7a4a; }
+    .log-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .log-action { font-size: 12px; font-weight: 700; color: var(--gray-800); letter-spacing: .06em; }
+    .log-user { font-size: 11px; color: var(--gray-400); }
+    .log-time { font-size: 11px; color: var(--gray-400); text-align: right; flex-shrink: 0; }
+    .log-chevron { font-size: 10px; color: var(--gray-400); margin-left: 4px; }
+    .log-detail { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 10px; }
+    .json-block { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--r-sm); padding: 10px 12px; }
+    .json-label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--gray-400); margin-bottom: 6px; }
+    .json-block pre { font-size: 11px; color: var(--gray-800); white-space: pre-wrap; word-break: break-all; font-family: 'Courier New', monospace; line-height: 1.5; }
+
+    /* ── Spinner ── */
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      .two-col { grid-template-columns: 1fr; }
+      .main-area { padding: 20px 16px; margin-left: 60px; }
+      .sidebar { width: 60px; }
+      .logo-text, .nav-item span:not(.nav-icon), .user-chip span:last-child { display: none; }
+      .sidebar-logo { padding: 20px 12px; justify-content: center; }
+      .flow-diagram { padding: 16px; gap: 8px; }
+      .flow-step span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-mark">A</span>
+      <span class="logo-text">Arcolabs</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active"><span class="nav-icon">⬡</span><span>Workflow</span></div>
+      <div class="nav-item"><span class="nav-icon">◱</span><span>Records</span></div>
+      <div class="nav-item"><span class="nav-icon">◎</span><span>Audit Logs</span></div>
+      <div class="nav-item"><span class="nav-icon">⚙</span><span>Settings</span></div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <span class="avatar">JD</span>
+        <span>John Doe</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-area" id="main">
+    <!-- Error banner (hidden by default) -->
+    <div class="error-banner" id="errorBanner" style="display:none">
+      <span id="errorText">Error</span>
+      <button onclick="hideError()">✕</button>
+    </div>
+
+    <!-- View: Dashboard -->
+    <div id="viewDashboard" class="dashboard">
+      <header class="dash-header">
+        <div>
+          <p class="dash-eyebrow">CMS Workflow Manager</p>
+          <h1 class="dash-title">Draft State Application</h1>
+        </div>
+        <div class="dash-stats">
+          <div class="stat-pill"><span class="stat-dot draft-dot"></span><span>Draft</span></div>
+          <div class="stat-pill"><span class="stat-dot performed-dot"></span><span>Performed</span></div>
+          <div class="stat-pill"><span class="stat-dot approved-dot"></span><span>Approved</span></div>
+        </div>
+      </header>
+
+      <div class="flow-diagram">
+        <div class="flow-step"><div class="flow-circle draft-circle">1</div><span>Create Draft</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-circle performed-circle">2</div><span>Perform</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-circle approved-circle">3</div><span>Approve</span></div>
+      </div>
+
+      <div class="demo-notice">
+        <span style="font-size:18px">ℹ</span>
+        <div>
+          <strong>Live Interactive Demo</strong>
+          This demo runs fully in-browser (no backend required). Records are stored in memory for this session — use the workflow below to see the full Draft → Perform → Approve flow with a live audit log.
+        </div>
+      </div>
+
+      <div class="create-card">
+        <h2 class="card-title">New Record</h2>
+        <p class="card-sub">Select a state code and initialise a new workflow record.</p>
+        <div class="field-row">
+          <label class="field-label">State / Region Code</label>
+          <div class="state-row">
+            <select class="state-select" id="stateSelect">
+              <option>MI</option><option>TX</option><option>NY</option>
+              <option>VI</option><option>PH</option><option>CA</option>
+              <option>FL</option><option>OH</option><option>GA</option><option>WA</option>
+            </select>
+            <button class="add-state-btn" onclick="addState()" title="Add state">+</button>
+          </div>
+        </div>
+        <button class="cta-btn" id="createBtn" onclick="createRecord()">⊕ Create Record</button>
+      </div>
+    </div>
+
+    <!-- View: Record -->
+    <div id="viewRecord" class="record-view" style="display:none">
+      <div class="record-topbar">
+        <button class="back-btn" onclick="showDashboard()">← Dashboard</button>
+        <div class="record-meta">
+          <span class="record-id-tag" id="recIdTag">ID #1</span>
+          <span class="status-badge badge-draft" id="statusBadge">DRAFT</span>
+        </div>
+      </div>
+      <h2 class="record-title" id="recTitle">—</h2>
+      <p class="record-sub" id="recMeta">—</p>
+      <div class="lock-banner" id="lockBanner" style="display:none">🔒 This record is locked and read-only. No further changes permitted.</div>
+
+      <div class="two-col">
+        <section class="form-card">
+          <h3 class="section-title">Record Details</h3>
+          <div class="field-group">
+            <label class="field-label">Sender Email</label>
+            <input class="field-input" type="email" id="fSender" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Details</label>
+            <textarea class="field-textarea" rows="3" id="fDetails"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Priority</label>
+            <select class="field-input" id="fPriority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Notes</label>
+            <textarea class="field-textarea" rows="2" id="fNotes" placeholder="Add any notes…"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Items</label>
+            <div class="items-list" id="itemsList"></div>
+          </div>
+          <div class="action-row" id="actionRow"></div>
+        </section>
+
+        <section class="audit-card">
+          <h3 class="section-title">Audit Log</h3>
+          <div class="log-list" id="auditList">
+            <p class="no-logs">No log entries yet.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  /* ── In-Memory State ── */
+  let records = {};
+  let auditLogs = {};
+  let nextId = 1;
+  let currentId = null;
+  let expandedLog = null;
+  const DUMMY_USER = 'John Doe';
+
+  const actionIcons = { create: '✦', perform: '◈', approve: '✔' };
+
+  /* ── Helpers ── */
+  function showError(msg) {
+    document.getElementById('errorText').textContent = msg;
+    document.getElementById('errorBanner').style.display = 'flex';
+    setTimeout(hideError, 4000);
+  }
+  function hideError() { document.getElementById('errorBanner').style.display = 'none'; }
+
+  function ts() { return new Date().toISOString(); }
+
+  function addAuditLog(recordId, action, before, after) {
+    if (!auditLogs[recordId]) auditLogs[recordId] = [];
+    auditLogs[recordId].unshift({
+      id: Date.now(),
+      action,
+      before_json: before ? JSON.parse(JSON.stringify(before)) : null,
+      after_json: JSON.parse(JSON.stringify(after)),
+      user: DUMMY_USER,
+      timestamp: ts()
+    });
+  }
+
+  /* ── API Simulation ── */
+  function apiCreate(stateCode) {
+    const data = {
+      sender: 'user@rocketmail.com',
+      details: 'This page shows the Client details registered with CMS',
+      items: ['item1', 'item2'],
+      notes: '',
+      priority: 'medium'
+    };
+    const id = nextId++;
+    records[id] = {
+      id, user_id: 'temp_001', status: 'draft',
+      title: `New Proposal - Draft (${stateCode})`,
+      state_code: stateCode,
+      data: JSON.parse(JSON.stringify(data)),
+      created_at: ts()
+    };
+    addAuditLog(id, 'create', null, data);
+    return id;
+  }
+
+  function apiPerform(id, newData) {
+    const rec = records[id];
+    if (!rec || rec.status !== 'draft') throw new Error('Illegal transition: record must be in draft state');
+    const before = JSON.parse(JSON.stringify(rec.data));
+    rec.data = JSON.parse(JSON.stringify(newData));
+    rec.status = 'performed';
+    addAuditLog(id, 'perform', before, rec.data);
+  }
+
+  function apiApprove(id) {
+    const rec = records[id];
+    if (!rec || rec.status !== 'performed') throw new Error('Cannot approve before perform');
+    const before = JSON.parse(JSON.stringify(rec.data));
+    rec.status = 'approved';
+    addAuditLog(id, 'approve', before, rec.data);
+  }
+
+  /* ── UI ── */
+  function addState() {
+    const name = prompt('Enter new state code (e.g. WI):');
+    if (!name || !name.trim()) return;
+    const code = name.trim().toUpperCase().slice(0, 3);
+    const sel = document.getElementById('stateSelect');
+    for (let o of sel.options) if (o.value === code) return;
+    const opt = document.createElement('option');
+    opt.value = code; opt.textContent = code;
+    sel.appendChild(opt); sel.value = code;
+  }
+
+  function createRecord() {
+    const state = document.getElementById('stateSelect').value;
+    const btn = document.getElementById('createBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Creating…';
+    setTimeout(() => {
+      try {
+        const id = apiCreate(state);
+        currentId = id;
+        showRecord(id);
+      } catch(e) { showError(e.message); }
+      btn.disabled = false;
+      btn.innerHTML = '⊕ Create Record';
+    }, 400);
+  }
+
+  function showDashboard() {
+    document.getElementById('viewDashboard').style.display = '';
+    document.getElementById('viewRecord').style.display = 'none';
+    currentId = null; expandedLog = null;
+  }
+
+  function showRecord(id) {
+    document.getElementById('viewDashboard').style.display = 'none';
+    document.getElementById('viewRecord').style.display = '';
+    renderRecord(id);
+  }
+
+  function renderRecord(id) {
+    const rec = records[id];
+    const logs = auditLogs[id] || [];
+    const isDraft = rec.status === 'draft';
+    const isApproved = rec.status === 'approved';
+
+    // Header
+    document.getElementById('recIdTag').textContent = `ID #${rec.id}`;
+    const badge = document.getElementById('statusBadge');
+    badge.textContent = rec.status.toUpperCase();
+    badge.className = `status-badge badge-${rec.status}`;
+    document.getElementById('recTitle').textContent = rec.title;
+    document.getElementById('recMeta').innerHTML =
+      `State: <strong>${rec.state_code}</strong> &nbsp;|&nbsp; ` +
+      `User: <strong>${rec.user_id}</strong> &nbsp;|&nbsp; ` +
+      `Created: <strong>${new Date(rec.created_at).toLocaleString()}</strong>`;
+    document.getElementById('lockBanner').style.display = isApproved ? '' : 'none';
+
+    // Fields
+    const d = rec.data;
+    document.getElementById('fSender').value = d.sender;
+    document.getElementById('fDetails').value = d.details;
+    document.getElementById('fPriority').value = d.priority;
+    document.getElementById('fNotes').value = d.notes;
+    ['fSender','fDetails','fPriority','fNotes'].forEach(fid => {
+      document.getElementById(fid).disabled = !isDraft;
+    });
+
+    // Items
+    const il = document.getElementById('itemsList');
+    il.innerHTML = (d.items || []).map(i => `<span class="item-tag">${i}</span>`).join('');
+
+    // Actions
+    const ar = document.getElementById('actionRow');
+    if (isDraft) {
+      ar.innerHTML = `<button class="perform-btn" onclick="doPerform()" id="performBtn">◈ Perform</button>`;
+    } else if (rec.status === 'performed') {
+      ar.innerHTML = `<button class="approve-btn" onclick="doApprove()" id="approveBtn">✔ Approve</button>`;
+    } else {
+      ar.innerHTML = '';
+    }
+
+    // Audit log
+    renderAuditLog(logs);
+  }
+
+  function renderAuditLog(logs) {
+    const el = document.getElementById('auditList');
+    if (!logs.length) { el.innerHTML = '<p class="no-logs">No log entries yet.</p>'; return; }
+    el.innerHTML = logs.map(log => {
+      const isExp = expandedLog === log.id;
+      const detail = isExp ? `
+        <div class="log-detail">
+          ${log.before_json ? `<div class="json-block"><span class="json-label">Before</span><pre>${JSON.stringify(log.before_json, null, 2)}</pre></div>` : ''}
+          <div class="json-block"><span class="json-label">After</span><pre>${JSON.stringify(log.after_json, null, 2)}</pre></div>
+        </div>` : '';
+      return `
+        <div class="log-entry ${isExp ? 'expanded' : ''}" onclick="toggleLog(${log.id})">
+          <div class="log-row">
+            <span class="log-icon action-${log.action}">${actionIcons[log.action]}</span>
+            <div class="log-info">
+              <span class="log-action">${log.action.toUpperCase()}</span>
+              <span class="log-user">by ${log.user}</span>
+            </div>
+            <span class="log-time">${new Date(log.timestamp).toLocaleString()}</span>
+            <span class="log-chevron">${isExp ? '▲' : '▼'}</span>
+          </div>${detail}
+        </div>`;
+    }).join('');
+  }
+
+  function toggleLog(logId) {
+    expandedLog = expandedLog === logId ? null : logId;
+    renderAuditLog(auditLogs[currentId] || []);
+  }
+
+  function collectFormData() {
+    return {
+      sender: document.getElementById('fSender').value,
+      details: document.getElementById('fDetails').value,
+      priority: document.getElementById('fPriority').value,
+      notes: document.getElementById('fNotes').value,
+      items: records[currentId].data.items
+    };
+  }
+
+  function doPerform() {
+    const btn = document.getElementById('performBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Processing…';
+    setTimeout(() => {
+      try {
+        apiPerform(currentId, collectFormData());
+        renderRecord(currentId);
+      } catch(e) { showError(e.message); btn.disabled = false; btn.innerHTML = '◈ Perform'; }
+    }, 500);
+  }
+
+  function doApprove() {
+    const btn = document.getElementById('approveBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Approving…';
+    setTimeout(() => {
+      try {
+        apiApprove(currentId);
+        renderRecord(currentId);
+      } catch(e) { showError(e.message); btn.disabled = false; btn.innerHTML = '✔ Approve'; }
+    }, 500);
+  }
+</script>
+</body>
+</html>
